@@ -1,0 +1,1300 @@
+// ================================================================
+// SkyForge Documentation — сайт документации на самом SkyForge
+// ================================================================
+
+пусть app = приложение()
+app.имя("SkyForge — документация")
+app.отладка(истина)
+
+// ----------------------------------------------------------------
+// CSS (инлайн — не нужны внешние файлы)
+// ----------------------------------------------------------------
+пусть CSS = """
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1117;
+       color: #e6e9f2; line-height: 1.6; }
+a { color: #9b83ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar { width: 260px; background: #161923; padding: 24px 0;
+           border-right: 1px solid #2a2f45; position: sticky; top: 0;
+           height: 100vh; overflow-y: auto; }
+.sidebar .logo { padding: 0 24px 24px; font-size: 22px; font-weight: 800;
+                 color: #9b83ff; letter-spacing: -0.5px; }
+.sidebar .logo small { display: block; font-size: 11px; color: #8b93a7;
+                       font-weight: 400; margin-top: 4px; }
+.nav-group { padding: 8px 24px 4px; font-size: 11px; text-transform: uppercase;
+             color: #8b93a7; letter-spacing: 1px; font-weight: 700; }
+.nav-item { display: block; padding: 8px 24px; color: #c8cce0; font-size: 14px;
+            border-left: 2px solid transparent; }
+.nav-item:hover { background: #1d2130; text-decoration: none; }
+.nav-item.active { color: #9b83ff; background: #1d2130;
+                   border-left-color: #7c5cff; }
+
+.content { flex: 1; padding: 48px 56px; max-width: 900px; }
+.content h1 { font-size: 34px; margin-bottom: 8px; color: #fff;
+              letter-spacing: -0.5px; }
+.content h1 + p.subtitle { color: #8b93a7; margin-bottom: 32px; font-size: 16px; }
+.content h2 { font-size: 24px; margin: 40px 0 16px; color: #fff; }
+.content h3 { font-size: 18px; margin: 24px 0 12px; color: #dcdcaa; }
+.content p { margin-bottom: 12px; }
+.content ul, .content ol { margin: 12px 0 12px 24px; }
+.content li { margin-bottom: 6px; }
+
+pre { background: #0b0d13; border: 1px solid #2a2f45; border-radius: 8px;
+      padding: 16px 20px; overflow-x: auto; margin: 16px 0;
+      font-family: 'Consolas', 'JetBrains Mono', monospace; font-size: 13px;
+      line-height: 1.6; }
+code { background: #1d2130; padding: 2px 8px; border-radius: 4px;
+       font-family: 'Consolas', monospace; font-size: 13px; color: #c586c0; }
+pre code { background: none; padding: 0; color: #e6e9f2; }
+
+.kw { color: #c586c0; } .str { color: #ce9178; } .num { color: #b5cea8; }
+.cmt { color: #6a9955; } .fn { color: #dcdcaa; } .type { color: #4ec9b0; }
+
+.card { background: #161923; border: 1px solid #2a2f45; border-radius: 10px;
+        padding: 20px 24px; margin: 16px 0; }
+.card h3 { margin-top: 0; }
+.tag { display: inline-block; background: #1d2130; color: #9b83ff;
+       padding: 3px 10px; border-radius: 12px; font-size: 12px;
+       margin-right: 6px; font-weight: 600; }
+.badge { display: inline-block; background: #7c5cff; color: #fff;
+         padding: 4px 12px; border-radius: 6px; font-size: 12px;
+         font-weight: 700; margin-left: 12px; vertical-align: middle; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px; margin: 24px 0; }
+.grid .card:hover { border-color: #7c5cff; }
+hr { border: none; border-top: 1px solid #2a2f45; margin: 32px 0; }
+.footer { padding: 24px 56px; border-top: 1px solid #2a2f45; color: #8b93a7;
+          font-size: 13px; }
+"""
+
+// ----------------------------------------------------------------
+// Навигация
+// ----------------------------------------------------------------
+пусть NAV = [
+    ["Начало", [
+        ["/", "Введение"],
+        ["/установка", "Установка"],
+    ]],
+    ["Язык", [
+        ["/синтаксис", "Синтаксис"],
+        ["/функции", "Функции"],
+        ["/классы", "Классы"],
+        ["/включения", "Включения"],
+        ["/исключения", "Исключения"],
+        ["/типы", "Типы"],
+        ["/генераторы", "Генераторы"],
+        ["/async", "Async / await"],
+        ["/совпадает", "Pattern matching"],
+        ["/декораторы", "Декораторы"],
+    ]],
+    ["Экосистема", [
+        ["/модули", "Стандартная библиотека"],
+        ["/питон", "Python-мост"],
+        ["/веб", "Веб-фреймворк"],
+        ["/orm", "ORM"],
+        ["/тесты", "Тестирование"],
+    ]],
+    ["Примеры", [
+        ["/примеры", "Готовые программы"],
+    ]],
+]
+
+// ----------------------------------------------------------------
+// Общий каркас
+// ----------------------------------------------------------------
+функция страница(заголовок, путь, содержимое) {
+    // строим сайдбар
+    пусть меню = ""
+    для группа в NAV {
+        меню = меню + '<div class="nav-group">' + группа[0] + '</div>'
+        для пункт в группа[1] {
+            пусть cls = "nav-item"
+            если пункт[0] == путь { cls = "nav-item active" }
+            меню = меню + '<a class="' + cls + '" href="' + пункт[0] + '">' + пункт[1] + '</a>'
+        }
+    }
+
+    вернуть app.шаблон_из("""
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ заголовок }} — SkyForge</title>
+  <style>{{ CSS }}</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      SkyForge
+      <small>русскоязычный язык программирования</small>
+    </div>
+    {{ меню }}
+  </aside>
+  <main class="content">
+    {{ содержимое }}
+    <hr>
+    <p style="color:#8b93a7;font-size:13px">
+      SkyForge v1.0.0 · <a href="https://pypi.org/project/skyforge-lang/">PyPI</a>
+      · <a href="https://github.com/">GitHub</a>
+    </p>
+  </main>
+</div>
+</body>
+</html>
+""", {
+        "заголовок": заголовок,
+        "CSS": CSS,
+        "меню": меню,
+        "содержимое": содержимое
+    })
+}
+
+// ----------------------------------------------------------------
+// Главная
+// ----------------------------------------------------------------
+app.маршрут("/", "GET", функция(з) {
+    пусть контент = """
+<h1>SkyForge <span class="badge">v1.0.0</span></h1>
+<p class="subtitle">Русскоязычный язык программирования. Компактный, мощный, для реальных задач.</p>
+
+<div class="card">
+<h3>Установка</h3>
+<pre><code>pip install skyforge-lang</code></pre>
+</div>
+
+<h2>Быстрый старт</h2>
+<pre><code><span class="cmt">// hello.skf</span>
+<span class="kw">функция</span> <span class="fn">привет</span>(имя) {
+    <span class="kw">вернуть</span> <span class="str">"Привет, "</span> + имя + <span class="str">"!"</span>
+}
+
+<span class="fn">лог</span>(<span class="fn">привет</span>(<span class="str">"Мир"</span>))
+</code></pre>
+
+<pre><code>SkyForge run hello.skf
+<span class="cmt"># Привет, Мир!</span></code></pre>
+
+<h2>Что внутри</h2>
+<div class="grid">
+  <div class="card"><h3>Язык</h3>
+    <p>Функции, классы, наследование, лямбды, включения, декораторы, генераторы, async/await, pattern matching, опциональные типы, исключения.</p></div>
+  <div class="card"><h3>Стандартная библиотека</h3>
+    <p>Строки, коллекции, JSON, CSV, файлы, дата/время, регекспы, хэши, base64, URL, крипто, склонения.</p></div>
+  <div class="card"><h3>Веб-фреймворк</h3>
+    <p>Маршруты, JSON API, шаблоны, статика, middleware, сессии, автодокументация <code>/docs</code>.</p></div>
+  <div class="card"><h3>ORM</h3>
+    <p>Модели, CRUD, запросы, сортировка, агрегация. SQLite из коробки.</p></div>
+  <div class="card"><h3>Тесты</h3>
+    <p>Декоратор <code>@тест("имя")</code>, ассерты, красивый отчёт, команда <code>SkyForge test</code>.</p></div>
+  <div class="card"><h3>Python-мост</h3>
+    <p><code>подключить_питон("numpy")</code> — весь PyPI доступен в одну строку.</p></div>
+</div>
+
+<h2>REPL</h2>
+<pre><code>SkyForge repl
+<span class="fn">SkyForge</span> ❯ <span class="kw">пусть</span> x = <span class="num">10</span>
+<span class="fn">SkyForge</span> ❯ x * <span class="num">2</span>
+<span class="num">20</span>
+</code></pre>
+
+<h2>Философия</h2>
+<div class="card">
+<p>Писать код так же естественно, как говорить. Русские ключевые слова, минимум символов, батарейки включены. Не замена Python — а инструмент для быстрых прототипов, скриптов, API и обучения.</p>
+</div>
+"""
+    вернуть страница("Введение", "/", контент)
+})
+
+// ----------------------------------------------------------------
+// Установка
+// ----------------------------------------------------------------
+app.маршрут("/установка", "GET", функция(з) {
+    пусть контент = """
+<h1>Установка</h1>
+<p class="subtitle">Одна команда — и язык у тебя.</p>
+
+<h2>Требования</h2>
+<ul>
+  <li>Python 3.9 или новее</li>
+  <li>Windows, macOS или Linux</li>
+</ul>
+
+<h2>Через pip</h2>
+<pre><code>pip install skyforge-lang</code></pre>
+
+<h2>Проверка</h2>
+<pre><code>SkyForge version
+<span class="cmt"># SkyForge 1.0.0</span>
+<span class="cmt"># Python: 3.12.0</span>
+<span class="cmt"># Платформа: linux</span>
+</code></pre>
+
+<h2>Команды CLI</h2>
+<div class="card">
+<pre><code>SkyForge repl                      <span class="cmt"># интерактивная консоль</span>
+SkyForge run app.skf               <span class="cmt"># запустить файл</span>
+SkyForge GAZUY app.skf             <span class="cmt"># запустить с баннером</span>
+SkyForge check app.skf             <span class="cmt"># проверить синтаксис</span>
+SkyForge test tests.skf            <span class="cmt"># прогнать тесты</span>
+SkyForge web app.skf --port 8000   <span class="cmt"># веб-приложение</span>
+SkyForge gui                       <span class="cmt"># графический лаунчер</span></code></pre>
+</div>
+
+<h2>Из исходников</h2>
+<pre><code>git clone https://github.com/твой-ник/skyforge
+cd skyforge
+pip install -e .</code></pre>
+
+<h2>VS Code</h2>
+<p>Пока нет официального расширения — используйте обычный редактор с подсветкой Python для базовой поддержки или встроенный <code>SkyForge gui</code>.</p>
+"""
+    вернуть страница("Установка", "/установка", контент)
+})
+
+// ----------------------------------------------------------------
+// Синтаксис
+// ----------------------------------------------------------------
+app.маршрут("/синтаксис", "GET", функция(з) {
+    пусть контент = """
+<h1>Синтаксис</h1>
+<p class="subtitle">Всё, что нужно знать для старта.</p>
+
+<h2>Переменные</h2>
+<pre><code><span class="kw">пусть</span> имя = <span class="str">"Алиса"</span>
+<span class="kw">пусть</span> возраст = <span class="num">30</span>
+возраст += <span class="num">1</span>       <span class="cmt">// 31</span>
+</code></pre>
+
+<h2>Вывод</h2>
+<pre><code><span class="fn">лог</span>(<span class="str">"Привет"</span>)
+<span class="fn">лог</span>(<span class="str">"Возраст: "</span> + возраст)
+<span class="fn">лог</span>(<span class="str">"Через год: {возраст + 1}"</span>)   <span class="cmt">// интерполяция</span>
+</code></pre>
+
+<h2>Условия</h2>
+<pre><code><span class="kw">если</span> оценка >= <span class="num">90</span> {
+    <span class="fn">лог</span>(<span class="str">"Отлично"</span>)
+} <span class="kw">иначе если</span> оценка >= <span class="num">75</span> {
+    <span class="fn">лог</span>(<span class="str">"Хорошо"</span>)
+} <span class="kw">иначе</span> {
+    <span class="fn">лог</span>(<span class="str">"Надо поработать"</span>)
+}
+</code></pre>
+
+<h2>Циклы</h2>
+<pre><code><span class="kw">для</span> i <span class="kw">от</span> <span class="num">0</span> <span class="kw">до</span> <span class="num">10</span> {
+    <span class="fn">лог</span>(i)
+}
+
+<span class="kw">для</span> i <span class="kw">от</span> <span class="num">0</span> <span class="kw">до</span> <span class="num">100</span> <span class="kw">шаг</span> <span class="num">5</span> {
+    <span class="fn">лог</span>(i)
+}
+
+<span class="kw">для</span> x <span class="kw">в</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>] {
+    <span class="fn">лог</span>(x)
+}
+
+<span class="kw">пока</span> x < <span class="num">10</span> {
+    x += <span class="num">1</span>
+}
+</code></pre>
+
+<h2>Управление циклом</h2>
+<pre><code><span class="kw">для</span> i <span class="kw">от</span> <span class="num">0</span> <span class="kw">до</span> <span class="num">10</span> {
+    <span class="kw">если</span> i == <span class="num">3</span> { <span class="kw">продолжить</span> }
+    <span class="kw">если</span> i > <span class="num">7</span> { <span class="kw">прервать</span> }
+    <span class="fn">лог</span>(i)
+}
+</code></pre>
+
+<h2>Тернарник</h2>
+<pre><code><span class="kw">пусть</span> статус = возраст >= <span class="num">18</span> <span class="kw">если</span> <span class="str">"взрослый"</span> <span class="kw">иначе</span> <span class="str">"ребёнок"</span>
+</code></pre>
+
+<h2>Коллекции</h2>
+<pre><code><span class="kw">пусть</span> lst = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="kw">пусть</span> сл = {<span class="str">"имя"</span>: <span class="str">"Алиса"</span>, <span class="str">"возраст"</span>: <span class="num">30</span>}
+<span class="kw">пусть</span> мн = <span class="fn">множество</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])
+
+<span class="fn">лог</span>(lst[<span class="num">0</span>])           <span class="cmt">// 1</span>
+<span class="fn">лог</span>(lst[<span class="num">1</span>:<span class="num">3</span>])         <span class="cmt">// [2, 3]</span>
+<span class="fn">лог</span>(lst[::-<span class="num">1</span>])         <span class="cmt">// [3, 2, 1]</span>
+<span class="fn">лог</span>(сл[<span class="str">"имя"</span>])          <span class="cmt">// Алиса</span>
+</code></pre>
+"""
+    вернуть страница("Синтаксис", "/синтаксис", контент)
+})
+
+// ----------------------------------------------------------------
+// Функции
+// ----------------------------------------------------------------
+app.маршрут("/функции", "GET", функция(з) {
+    пусть контент = """
+<h1>Функции</h1>
+<p class="subtitle">Именованные, анонимные, с типами.</p>
+
+<h2>Обычная функция</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">сумма</span>(a, b) {
+    <span class="kw">вернуть</span> a + b
+}
+
+<span class="fn">лог</span>(<span class="fn">сумма</span>(<span class="num">2</span>, <span class="num">3</span>))   <span class="cmt">// 5</span>
+</code></pre>
+
+<h2>Дефолтные аргументы</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">привет</span>(имя, приветствие = <span class="str">"Привет"</span>) {
+    <span class="kw">вернуть</span> приветствие + <span class="str">", "</span> + имя
+}
+
+<span class="fn">лог</span>(<span class="fn">привет</span>(<span class="str">"Алиса"</span>))                     <span class="cmt">// Привет, Алиса</span>
+<span class="fn">лог</span>(<span class="fn">привет</span>(<span class="str">"Боб"</span>, <span class="str">"Здравствуй"</span>))         <span class="cmt">// Здравствуй, Боб</span>
+</code></pre>
+
+<h2>Именованные аргументы</h2>
+<pre><code><span class="fn">привет</span>(имя = <span class="str">"Катя"</span>, приветствие = <span class="str">"Хай"</span>)
+</code></pre>
+
+<h2>Лямбды</h2>
+<pre><code><span class="kw">пусть</span> удвоить = <span class="kw">функция</span>(x) { <span class="kw">вернуть</span> x * <span class="num">2</span> }
+<span class="kw">пусть</span> утроить = <span class="kw">функ</span>(x) { <span class="kw">вернуть</span> x * <span class="num">3</span> }
+
+<span class="fn">лог</span>(<span class="fn">удвоить</span>(<span class="num">21</span>))   <span class="cmt">// 42</span>
+</code></pre>
+
+<h2>Функции высшего порядка</h2>
+<pre><code><span class="kw">пусть</span> числа = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+
+<span class="fn">лог</span>(числа.<span class="fn">карта</span>(<span class="kw">функ</span>(x) { <span class="kw">вернуть</span> x * x }))
+<span class="cmt">// [1, 4, 9, 16, 25]</span>
+
+<span class="fn">лог</span>(числа.<span class="fn">фильтр</span>(<span class="kw">функ</span>(x) { <span class="kw">вернуть</span> x % <span class="num">2</span> == <span class="num">0</span> }))
+<span class="cmt">// [2, 4]</span>
+</code></pre>
+
+<h2>Типы параметров и возврата</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">сумма</span>(a: <span class="type">число</span>, b: <span class="type">число</span>) -> <span class="type">число</span> {
+    <span class="kw">вернуть</span> a + b
+}
+
+<span class="fn">сумма</span>(<span class="str">"2"</span>, <span class="str">"3"</span>)   <span class="cmt">// ошибка типа — поймается автоматически</span>
+</code></pre>
+
+<h2>Рекурсия</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">фибо</span>(n) {
+    <span class="kw">если</span> n <= <span class="num">1</span> { <span class="kw">вернуть</span> n }
+    <span class="kw">вернуть</span> <span class="fn">фибо</span>(n - <span class="num">1</span>) + <span class="fn">фибо</span>(n - <span class="num">2</span>)
+}
+
+<span class="fn">лог</span>(<span class="fn">фибо</span>(<span class="num">10</span>))   <span class="cmt">// 55</span>
+</code></pre>
+"""
+    вернуть страница("Функции", "/функции", контент)
+})
+
+// ----------------------------------------------------------------
+// Классы
+// ----------------------------------------------------------------
+app.маршрут("/классы", "GET", функция(з) {
+    пусть контент = """
+<h1>Классы</h1>
+<p class="subtitle">ООП с наследованием и super.</p>
+
+<h2>Простой класс</h2>
+<pre><code><span class="kw">класс</span> <span class="type">Точка</span> {
+    <span class="kw">функция</span> <span class="fn">инициализация</span>(x, y) {
+        <span class="kw">это</span>.x = x
+        <span class="kw">это</span>.y = y
+    }
+
+    <span class="kw">функция</span> <span class="fn">длина</span>() {
+        <span class="kw">вернуть</span> <span class="fn">корень</span>(<span class="kw">это</span>.x * <span class="kw">это</span>.x + <span class="kw">это</span>.y * <span class="kw">это</span>.y)
+    }
+}
+
+<span class="kw">пусть</span> p = <span class="type">Точка</span>(<span class="num">3</span>, <span class="num">4</span>)
+<span class="fn">лог</span>(p.<span class="fn">длина</span>())   <span class="cmt">// 5.0</span>
+</code></pre>
+
+<h2>Наследование</h2>
+<pre><code><span class="kw">класс</span> <span class="type">Животное</span> {
+    <span class="kw">функция</span> <span class="fn">инициализация</span>(имя) { <span class="kw">это</span>.имя = имя }
+    <span class="kw">функция</span> <span class="fn">говорить</span>() { <span class="kw">вернуть</span> <span class="str">"..."</span> }
+}
+
+<span class="kw">класс</span> <span class="type">Собака</span> <span class="kw">наследник</span> <span class="type">Животное</span> {
+    <span class="kw">функция</span> <span class="fn">говорить</span>() { <span class="kw">вернуть</span> <span class="str">"Гав!"</span> }
+}
+
+<span class="kw">пусть</span> с = <span class="type">Собака</span>(<span class="str">"Шарик"</span>)
+<span class="fn">лог</span>(с.<span class="fn">говорить</span>())   <span class="cmt">// Гав!</span>
+</code></pre>
+
+<h2>super — вызов родителя</h2>
+<pre><code><span class="kw">класс</span> <span class="type">Кот</span> <span class="kw">наследник</span> <span class="type">Животное</span> {
+    <span class="kw">функция</span> <span class="fn">говорить</span>() {
+        <span class="kw">вернуть</span> <span class="fn">супер</span>.<span class="fn">говорить</span>() + <span class="str">" Мяу!"</span>
+    }
+}
+
+<span class="fn">лог</span>(<span class="type">Кот</span>(<span class="str">"Барсик"</span>).<span class="fn">говорить</span>())   <span class="cmt">// ... Мяу!</span>
+</code></pre>
+
+<h2>Атрибуты класса</h2>
+<pre><code><span class="kw">класс</span> <span class="type">Счётчик</span> {
+    значение = <span class="num">0</span>
+
+    <span class="kw">функция</span> <span class="fn">прибавить</span>(n) {
+        <span class="kw">это</span>.значение += n
+        <span class="kw">вернуть</span> <span class="kw">это</span>            <span class="cmt">// для цепочки</span>
+    }
+}
+
+<span class="kw">пусть</span> c = <span class="type">Счётчик</span>()
+c.<span class="fn">прибавить</span>(<span class="num">5</span>).<span class="fn">прибавить</span>(<span class="num">10</span>)
+<span class="fn">лог</span>(c.значение)   <span class="cmt">// 15</span>
+</code></pre>
+"""
+    вернуть страница("Классы", "/классы", контент)
+})
+
+// ----------------------------------------------------------------
+// Включения
+// ----------------------------------------------------------------
+app.маршрут("/включения", "GET", функция(з) {
+    пусть контент = """
+<h1>Включения</h1>
+<p class="subtitle">Списковые и словарные comprehension.</p>
+
+<h2>Списковые</h2>
+<pre><code><span class="kw">пусть</span> числа = <span class="fn">диапазон</span>(<span class="num">1</span>, <span class="num">11</span>)
+
+<span class="cmt">// Квадраты</span>
+<span class="fn">лог</span>([x * x <span class="kw">для</span> x <span class="kw">в</span> числа])
+<span class="cmt">// [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</span>
+
+<span class="cmt">// Только чётные</span>
+<span class="fn">лог</span>([x <span class="kw">для</span> x <span class="kw">в</span> числа <span class="kw">если</span> x % <span class="num">2</span> == <span class="num">0</span>])
+<span class="cmt">// [2, 4, 6, 8, 10]</span>
+
+<span class="cmt">// Из двух источников (вложенное)</span>
+<span class="fn">лог</span>([[i, j] <span class="kw">для</span> i <span class="kw">в</span> диапазон(<span class="num">3</span>) <span class="kw">для</span> j <span class="kw">в</span> диапазон(<span class="num">3</span>)])
+</code></pre>
+
+<h2>Словарные</h2>
+<pre><code><span class="kw">пусть</span> пары = [[<span class="num">1</span>, <span class="str">"а"</span>], [<span class="num">2</span>, <span class="str">"б"</span>], [<span class="num">3</span>, <span class="str">"в"</span>]]
+
+<span class="fn">лог</span>({k: v <span class="kw">для</span> k, v <span class="kw">в</span> пары})
+<span class="cmt">// {1: 'а', 2: 'б', 3: 'в'}</span>
+
+<span class="kw">пусть</span> квадраты = {x: x * x <span class="kw">для</span> x <span class="kw">в</span> диапазон(<span class="num">1</span>, <span class="num">6</span>)}
+<span class="cmt">// {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}</span>
+</code></pre>
+
+<h2>С распаковкой</h2>
+<pre><code><span class="kw">пусть</span> люди = [
+    {<span class="str">"имя"</span>: <span class="str">"Алиса"</span>, <span class="str">"возраст"</span>: <span class="num">30</span>},
+    {<span class="str">"имя"</span>: <span class="str">"Боб"</span>,   <span class="str">"возраст"</span>: <span class="num">25</span>}
+]
+
+<span class="kw">пусть</span> имена = [ч[<span class="str">"имя"</span>] <span class="kw">для</span> ч <span class="kw">в</span> люди]
+<span class="kw">пусть</span> возраст_словарь = {ч[<span class="str">"имя"</span>]: ч[<span class="str">"возраст"</span>] <span class="kw">для</span> ч <span class="kw">в</span> люди}
+</code></pre>
+"""
+    вернуть страница("Включения", "/включения", контент)
+})
+
+// ----------------------------------------------------------------
+// Исключения
+// ----------------------------------------------------------------
+app.маршрут("/исключения", "GET", функция(з) {
+    пусть контент = """
+<h1>Исключения</h1>
+<p class="subtitle">try / catch / finally / throw.</p>
+
+<h2>Базовый синтаксис</h2>
+<pre><code><span class="kw">попробовать</span> {
+    <span class="kw">пусть</span> r = <span class="num">1</span> / <span class="num">0</span>
+} <span class="kw">поймать</span> e {
+    <span class="fn">лог</span>(<span class="str">"Ошибка: "</span> + e)
+} <span class="kw">наконец</span> {
+    <span class="fn">лог</span>(<span class="str">"Всегда выполняется"</span>)
+}
+</code></pre>
+
+<h2>Свои ошибки</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">проверка</span>(возраст) {
+    <span class="kw">если</span> возраст < <span class="num">0</span> {
+        <span class="kw">бросить</span> <span class="str">"Возраст не может быть отрицательным"</span>
+    }
+    <span class="kw">вернуть</span> возраст
+}
+
+<span class="kw">попробовать</span> {
+    <span class="fn">проверка</span>(-<span class="num">5</span>)
+} <span class="kw">поймать</span> e {
+    <span class="fn">лог</span>(e)   <span class="cmt">// Возраст не может быть отрицательным</span>
+}
+</code></pre>
+
+<h2>Вложенные</h2>
+<pre><code><span class="kw">попробовать</span> {
+    <span class="kw">попробовать</span> {
+        <span class="kw">бросить</span> <span class="str">"внутренняя"</span>
+    } <span class="kw">поймать</span> e {
+        <span class="fn">лог</span>(<span class="str">"Поймал внутри: "</span> + e)
+        <span class="kw">бросить</span> <span class="str">"перебросил наружу"</span>
+    }
+} <span class="kw">поймать</span> e {
+    <span class="fn">лог</span>(<span class="str">"Снаружи: "</span> + e)
+}
+</code></pre>
+
+<h2>Проверки (assert)</h2>
+<pre><code><span class="kw">проверить</span> <span class="num">2</span> + <span class="num">2</span> == <span class="num">4</span>, <span class="str">"Математика сломалась"</span>
+<span class="kw">проверить</span> <span class="str">"abc"</span>.<span class="fn">длина</span>() == <span class="num">3</span>
+</code></pre>
+"""
+    вернуть страница("Исключения", "/исключения", контент)
+})
+
+// ----------------------------------------------------------------
+// Типы
+// ----------------------------------------------------------------
+app.маршрут("/типы", "GET", функция(з) {
+    пусть контент = """
+<h1>Типы</h1>
+<p class="subtitle">Опциональная типизация — проверка в рантайме.</p>
+
+<h2>Доступные типы</h2>
+<div class="card">
+<p><span class="tag">число</span> int или float</p>
+<p><span class="tag">целое</span> int</p>
+<p><span class="tag">дробное</span> float</p>
+<p><span class="tag">строка</span> str</p>
+<p><span class="tag">булево</span> bool</p>
+<p><span class="tag">список</span> list</p>
+<p><span class="tag">словарь</span> dict</p>
+<p><span class="tag">множество</span> set</p>
+<p><span class="tag">кортеж</span> tuple</p>
+<p><span class="tag">ничего</span> None</p>
+<p><span class="tag">любой</span> без проверки</p>
+</div>
+
+<h2>Синтаксис</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">сумма</span>(a: <span class="type">число</span>, b: <span class="type">число</span>) -> <span class="type">число</span> {
+    <span class="kw">вернуть</span> a + b
+}
+
+<span class="kw">функция</span> <span class="fn">привет</span>(имя: <span class="type">строка</span>) -> <span class="type">строка</span> {
+    <span class="kw">вернуть</span> <span class="str">"Привет, "</span> + имя
+}
+</code></pre>
+
+<h2>Проверка</h2>
+<pre><code><span class="fn">сумма</span>(<span class="num">2</span>, <span class="num">3</span>)           <span class="cmt">// OK → 5</span>
+<span class="fn">сумма</span>(<span class="str">"2"</span>, <span class="str">"3"</span>)       <span class="cmt">// TypeError: параметр 'a' в сумма</span>
+                     <span class="cmt">//   ожидалось 'число', получено 'str'</span>
+</code></pre>
+
+<h2>Дефолты + типы</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">привет</span>(
+    имя: <span class="type">строка</span>,
+    приветствие: <span class="type">строка</span> = <span class="str">"Привет"</span>
+) -> <span class="type">строка</span> {
+    <span class="kw">вернуть</span> приветствие + <span class="str">", "</span> + имя
+}
+</code></pre>
+
+<h2>Проверка типа значения</h2>
+<pre><code><span class="fn">тип</span>(<span class="num">42</span>)           <span class="cmt">// "int"</span>
+<span class="fn">тип</span>(<span class="str">"привет"</span>)     <span class="cmt">// "str"</span>
+<span class="fn">тип</span>([<span class="num">1</span>, <span class="num">2</span>])       <span class="cmt">// "list"</span>
+<span class="fn">тип</span>(<span class="num">42</span>).<span class="fn">строка</span>()  <span class="cmt">// "int"</span>
+</code></pre>
+"""
+    вернуть страница("Типы", "/типы", контент)
+})
+
+// ----------------------------------------------------------------
+// Генераторы
+// ----------------------------------------------------------------
+app.маршрут("/генераторы", "GET", функция(з) {
+    пусть контент = """
+<h1>Генераторы</h1>
+<p class="subtitle">Ленивые последовательности через <code>выдать</code>.</p>
+
+<h2>Простой генератор</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">числа_до</span>(n) {
+    <span class="kw">для</span> i <span class="kw">от</span> <span class="num">1</span> <span class="kw">до</span> n + <span class="num">1</span> {
+        <span class="kw">выдать</span> i
+    }
+}
+
+<span class="kw">для</span> x <span class="kw">в</span> <span class="fn">числа_до</span>(<span class="num">5</span>) {
+    <span class="fn">лог</span>(x)   <span class="cmt">// 1, 2, 3, 4, 5</span>
+}
+</code></pre>
+
+<h2>Бесконечный</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">фибо</span>() {
+    <span class="kw">пусть</span> a = <span class="num">0</span>
+    <span class="kw">пусть</span> b = <span class="num">1</span>
+    <span class="kw">пока</span> истина {
+        <span class="kw">выдать</span> a
+        <span class="kw">пусть</span> c = a + b
+        a = b
+        b = c
+    }
+}
+
+<span class="kw">пусть</span> счётчик = <span class="num">0</span>
+<span class="kw">для</span> n <span class="kw">в</span> <span class="fn">фибо</span>() {
+    <span class="fn">лог</span>(n)
+    счётчик += <span class="num">1</span>
+    <span class="kw">если</span> счётчик >= <span class="num">10</span> { <span class="kw">прервать</span> }
+}
+</code></pre>
+
+<h2>Цепочки методов</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">чётные</span>(макс) {
+    <span class="kw">для</span> i <span class="kw">от</span> <span class="num">0</span> <span class="kw">до</span> макс + <span class="num">1</span> {
+        <span class="kw">если</span> i % <span class="num">2</span> == <span class="num">0</span> { <span class="kw">выдать</span> i }
+    }
+}
+
+<span class="fn">лог</span>(<span class="fn">чётные</span>(<span class="num">10</span>).<span class="fn">карта</span>(<span class="kw">функ</span>(x) { <span class="kw">вернуть</span> x * x }))
+<span class="cmt">// [0, 4, 16, 36, 64, 100]</span>
+</code></pre>
+"""
+    вернуть страница("Генераторы", "/генераторы", контент)
+})
+
+// ----------------------------------------------------------------
+// Async
+// ----------------------------------------------------------------
+app.маршрут("/async", "GET", функция(з) {
+    пусть контент = """
+<h1>Async / await</h1>
+<p class="subtitle">Настоящий параллелизм через потоки.</p>
+
+<h2>Асинхронная функция</h2>
+<pre><code><span class="kw">асинхронно функция</span> <span class="fn">скачать</span>(url) {
+    <span class="kw">пусть</span> r = <span class="kw">ждать</span> http_запрос(url)
+    <span class="kw">вернуть</span> r
+}
+
+<span class="kw">пусть</span> данные = <span class="kw">ждать</span> <span class="fn">скачать</span>(<span class="str">"https://api.site/data"</span>)
+</code></pre>
+
+<h2>Параллельно — ждать_все</h2>
+<pre><code><span class="kw">асинхронно функция</span> <span class="fn">медленно</span>(имя, сек) {
+    <span class="fn">спать</span>(сек)
+    <span class="kw">вернуть</span> <span class="str">"готово-"</span> + имя
+}
+
+<span class="cmt">// Три задачи параллельно — суммарно ~1 секунда, а не 3</span>
+<span class="kw">пусть</span> результаты = <span class="kw">ждать_все</span>([
+    <span class="fn">медленно</span>(<span class="str">"A"</span>, <span class="num">1</span>),
+    <span class="fn">медленно</span>(<span class="str">"B"</span>, <span class="num">1</span>),
+    <span class="fn">медленно</span>(<span class="str">"C"</span>, <span class="num">1</span>),
+])
+
+<span class="fn">лог</span>(результаты)
+<span class="cmt">// ['готово-A', 'готово-B', 'готово-C']</span>
+</code></pre>
+
+<h2>Реальный кейс — параллельные запросы</h2>
+<pre><code><span class="kw">пусть</span> requests = <span class="fn">подключить_питон</span>(<span class="str">"requests"</span>)
+
+<span class="kw">асинхронно функция</span> <span class="fn">получить</span>(url) {
+    <span class="kw">пусть</span> r = <span class="kw">ждать</span> requests.get(url)
+    <span class="kw">вернуть</span> r.json()
+}
+
+<span class="kw">пусть</span> репы = <span class="kw">ждать_все</span>([
+    <span class="fn">получить</span>(<span class="str">"https://api.github.com/repos/python/cpython"</span>),
+    <span class="fn">получить</span>(<span class="str">"https://api.github.com/repos/django/django"</span>),
+])
+</code></pre>
+
+<h2>Дождаться первой</h2>
+<pre><code><span class="kw">пусть</span> быстрый = <span class="kw">ждать_первую</span>([
+    <span class="fn">медленно</span>(<span class="str">"A"</span>, <span class="num">3</span>),
+    <span class="fn">медленно</span>(<span class="str">"B"</span>, <span class="num">1</span>),
+    <span class="fn">медленно</span>(<span class="str">"C"</span>, <span class="num">2</span>),
+])   <span class="cmt">// вернёт B через 1 секунду</span>
+</code></pre>
+"""
+    вернуть страница("Async / await", "/async", контент)
+})
+
+// ----------------------------------------------------------------
+// Pattern matching
+// ----------------------------------------------------------------
+app.маршрут("/совпадает", "GET", функция(з) {
+    пусть контент = """
+<h1>Pattern matching</h1>
+<p class="subtitle">Сопоставление с образцом — вместо длинных if-else.</p>
+
+<h2>Литералы</h2>
+<pre><code><span class="kw">совпадает</span> x {
+    <span class="kw">случай</span> <span class="num">0</span> { <span class="fn">лог</span>(<span class="str">"ноль"</span>) }
+    <span class="kw">случай</span> <span class="num">1</span> { <span class="fn">лог</span>(<span class="str">"один"</span>) }
+    <span class="kw">случай</span> <span class="str">"привет"</span> { <span class="fn">лог</span>(<span class="str">"приветствие"</span>) }
+    <span class="kw">иначе</span> { <span class="fn">лог</span>(<span class="str">"другое"</span>) }
+}
+</code></pre>
+
+<h2>Списки — распаковка</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">разобрать</span>(p) {
+    <span class="kw">совпадает</span> p {
+        <span class="kw">случай</span> [] { <span class="kw">вернуть</span> <span class="str">"пусто"</span> }
+        <span class="kw">случай</span> [x] { <span class="kw">вернуть</span> <span class="str">"одно: "</span> + x }
+        <span class="kw">случай</span> [x, y] { <span class="kw">вернуть</span> <span class="str">"два: "</span> + x + <span class="str">", "</span> + y }
+        <span class="kw">иначе</span> { <span class="kw">вернуть</span> <span class="str">"много"</span> }
+    }
+}
+</code></pre>
+
+<h2>Словари</h2>
+<pre><code><span class="kw">совпадает</span> человек {
+    <span class="kw">случай</span> {<span class="str">"имя"</span>: имя, <span class="str">"возраст"</span>: возраст} {
+        <span class="fn">лог</span>(имя + <span class="str">", "</span> + возраст + <span class="str">" лет"</span>)
+    }
+    <span class="kw">случай</span> {<span class="str">"имя"</span>: имя} {
+        <span class="fn">лог</span>(имя + <span class="str">", возраст неизвестен"</span>)
+    }
+    <span class="kw">иначе</span> {
+        <span class="fn">лог</span>(<span class="str">"не человек"</span>)
+    }
+}
+</code></pre>
+
+<h2>Wildcard</h2>
+<pre><code><span class="kw">функция</span> <span class="fn">факториал</span>(n) {
+    <span class="kw">совпадает</span> n {
+        <span class="kw">случай</span> <span class="num">0</span> { <span class="kw">вернуть</span> <span class="num">1</span> }
+        <span class="kw">случай</span> _ { <span class="kw">вернуть</span> n * <span class="fn">факториал</span>(n - <span class="num">1</span>) }
+    }
+}
+</code></pre>
+"""
+    вернуть страница("Pattern matching", "/совпадает", контент)
+})
+
+// ----------------------------------------------------------------
+// Декораторы
+// ----------------------------------------------------------------
+app.маршрут("/декораторы", "GET", функция(з) {
+    пусть контент = """
+<h1>Декораторы</h1>
+<p class="subtitle">Оборачивай функции без изменения тела.</p>
+
+<h2>Встроенные</h2>
+<pre><code><span class="cmt">// Кеширование</span>
+<span class="kw">@кешировать</span>
+<span class="kw">функция</span> <span class="fn">тяжёлая</span>(n) {
+    <span class="fn">спать</span>(<span class="num">0.5</span>)
+    <span class="kw">вернуть</span> n * n
+}
+
+<span class="fn">тяжёлая</span>(<span class="num">5</span>)   <span class="cmt">// 0.5 сек</span>
+<span class="fn">тяжёлая</span>(<span class="num">5</span>)   <span class="cmt">// мгновенно, из кеша</span>
+</code></pre>
+
+<pre><code><span class="cmt">// Повторить при ошибке</span>
+<span class="kw">@повторить</span>(<span class="num">3</span>)
+<span class="kw">функция</span> <span class="fn">нестабильно</span>() {
+    <span class="kw">вернуть</span> <span class="fn">запрос_к_api</span>()
+}
+</code></pre>
+
+<pre><code><span class="cmt">// Время выполнения</span>
+<span class="kw">@таймер_декоратор</span>
+<span class="kw">функция</span> <span class="fn">сортировка</span>(lst) {
+    <span class="kw">вернуть</span> lst.<span class="fn">сортировать</span>()
+}
+<span class="cmt">// [таймер] сортировка: 12.34 мс</span>
+</code></pre>
+
+<pre><code><span class="cmt">// Логирование вызовов</span>
+<span class="kw">@логировать</span>
+<span class="kw">функция</span> <span class="fn">удвоить</span>(x) { <span class="kw">вернуть</span> x * <span class="num">2</span> }
+
+<span class="cmt">// [лог] вызов удвоить((21,))</span>
+<span class="cmt">// [лог] -> 42</span>
+</code></pre>
+
+<h2>Цепочка</h2>
+<pre><code><span class="kw">@кешировать</span>
+<span class="kw">@таймер_декоратор</span>
+<span class="kw">функция</span> <span class="fn">комбо</span>(x) {
+    <span class="fn">спать</span>(<span class="num">0.1</span>)
+    <span class="kw">вернуть</span> x + <span class="num">100</span>
+}
+</code></pre>
+"""
+    вернуть страница("Декораторы", "/декораторы", контент)
+})
+
+// ----------------------------------------------------------------
+// Стандартная библиотека
+// ----------------------------------------------------------------
+app.маршрут("/модули", "GET", функция(з) {
+    пусть контент = """
+<h1>Стандартная библиотека</h1>
+<p class="subtitle">Всё встроено, импортов не нужно.</p>
+
+<h2>Строки</h2>
+<pre><code><span class="str">"привет"</span>.<span class="fn">заглавные</span>()       <span class="cmt">// "ПРИВЕТ"</span>
+<span class="str">"a,b,c"</span>.<span class="fn">разделить</span>(<span class="str">","</span>)     <span class="cmt">// ["a", "b", "c"]</span>
+<span class="str">"abc"</span>.<span class="fn">заменить</span>(<span class="str">"b"</span>, <span class="str">"X"</span>) <span class="cmt">// "aXc"</span>
+<span class="str">"abcdef"</span>.<span class="fn">первые</span>(<span class="num">3</span>)        <span class="cmt">// "abc"</span>
+<span class="str">"42"</span>.<span class="fn">в_число</span>()             <span class="cmt">// 42</span>
+</code></pre>
+
+<h2>Списки и коллекции</h2>
+<pre><code><span class="kw">пусть</span> lst = [<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>]
+lst.<span class="fn">сумма</span>()                   <span class="cmt">// 14</span>
+lst.<span class="fn">сортировать</span>()            <span class="cmt">// [1, 1, 3, 4, 5]</span>
+lst.<span class="fn">уникальные</span>()             <span class="cmt">// [3, 1, 4, 5]</span>
+lst.<span class="fn">среднее</span>()                <span class="cmt">// 2.8</span>
+</code></pre>
+
+<h2>JSON</h2>
+<pre><code><span class="kw">пусть</span> obj = {<span class="str">"имя"</span>: <span class="str">"Алиса"</span>, <span class="str">"возраст"</span>: <span class="num">30</span>}
+<span class="kw">пусть</span> строка = <span class="fn">json_создать</span>(obj)
+<span class="kw">пусть</span> назад = <span class="fn">json_разобрать</span>(строка)
+
+<span class="fn">json_писать</span>(<span class="str">"data.json"</span>, obj)
+<span class="kw">пусть</span> из_файла = <span class="fn">json_читать</span>(<span class="str">"data.json"</span>)
+</code></pre>
+
+<h2>Файлы</h2>
+<pre><code><span class="fn">писать_файл</span>(<span class="str">"test.txt"</span>, <span class="str">"привет"</span>)
+<span class="fn">добавить_файл</span>(<span class="str">"test.txt"</span>, <span class="str">"\nпока"</span>)
+<span class="kw">пусть</span> текст = <span class="fn">читать_файл</span>(<span class="str">"test.txt"</span>)
+<span class="kw">пусть</span> строки = <span class="fn">прочитать_строки</span>(<span class="str">"test.txt"</span>)
+</code></pre>
+
+<h2>Дата и время</h2>
+<pre><code><span class="fn">дата_сейчас</span>()                  <span class="cmt">// "2026-09-12 14:30:00"</span>
+<span class="fn">дата_по_русски</span>()               <span class="cmt">// "12 сентября 2026, суббота"</span>
+<span class="fn">сколько_назад</span>(ts)              <span class="cmt">// "2 часа назад"</span>
+<span class="fn">склонение_с_числом</span>(<span class="num">5</span>, <span class="str">"яблоко"</span>, <span class="str">"яблока"</span>, <span class="str">"яблок"</span>)
+<span class="cmt">// "5 яблок"</span>
+</code></pre>
+
+<h2>Регекспы</h2>
+<pre><code><span class="fn">регексп_совпадает</span>(<span class="str">"^\\d+$"</span>, <span class="str">"12345"</span>)   <span class="cmt">// истина</span>
+<span class="fn">регексп_все</span>(<span class="str">"\\d+"</span>, <span class="str">"10 и 20 и 30"</span>)      <span class="cmt">// ["10", "20", "30"]</span>
+<span class="fn">регексп_заменить</span>(<span class="str">"\\d+"</span>, <span class="str">"N"</span>, <span class="str">"a1b2c3"</span>) <span class="cmt">// "aNbNcN"</span>
+</code></pre>
+
+<h2>Хэши и крипто</h2>
+<pre><code><span class="fn">md5</span>(<span class="str">"привет"</span>)                    <span class="cmt">// hex-строка 32 символа</span>
+<span class="fn">sha256</span>(<span class="str">"привет"</span>)                 <span class="cmt">// 64 символа</span>
+<span class="fn">base64_кодировать</span>(<span class="str">"привет"</span>)      <span class="cmt">// "0L/RgNC40LLQtdGC"</span>
+
+<span class="kw">пусть</span> хеш = <span class="fn">хеш_пароля</span>(<span class="str">"секрет"</span>)
+<span class="fn">проверить_пароль</span>(<span class="str">"секрет"</span>, хеш)  <span class="cmt">// истина</span>
+
+<span class="kw">пусть</span> токен = <span class="fn">jwt_создать</span>({<span class="str">"user_id"</span>: <span class="num">42</span>}, <span class="str">"secret"</span>)
+<span class="kw">пусть</span> данные = <span class="fn">jwt_разобрать</span>(токен, <span class="str">"secret"</span>)
+</code></pre>
+
+<h2>Русские утилиты</h2>
+<pre><code><span class="fn">транслит</span>(<span class="str">"Привет"</span>)               <span class="cmt">// "Privet"</span>
+<span class="fn">заголовок</span>(<span class="str">"skyforge крутой"</span>)     <span class="cmt">// "Skyforge Крутой"</span>
+<span class="fn">обрезать_до</span>(<span class="str">"длинный текст"</span>, <span class="num">6</span>)  <span class="cmt">// "длин..."</span>
+<span class="fn">склонение</span>(<span class="num">2</span>, <span class="str">"год"</span>, <span class="str">"года"</span>, <span class="str">"лет"</span>) <span class="cmt">// "года"</span>
+</code></pre>
+"""
+    вернуть страница("Стандартная библиотека", "/модули", контент)
+})
+
+// ----------------------------------------------------------------
+// Python-мост
+// ----------------------------------------------------------------
+app.маршрут("/питон", "GET", функция(з) {
+    пусть контент = """
+<h1>Python-мост</h1>
+<p class="subtitle">Весь PyPI доступен в одну строку.</p>
+
+<h2>Синтаксис</h2>
+<pre><code><span class="kw">пусть</span> requests = <span class="fn">подключить_питон</span>(<span class="str">"requests"</span>)
+<span class="kw">пусть</span> r = requests.get(<span class="str">"https://api.github.com/repos/python/cpython"</span>)
+<span class="fn">лог</span>(r.json()[<span class="str">"stargazers_count"</span>])
+</code></pre>
+
+<h2>Вложенные модули</h2>
+<p>Если модуль точечный — возвращается <b>корневой</b>, чтобы привычная иерархия работала:</p>
+<pre><code><span class="kw">пусть</span> os = <span class="fn">подключить_питон</span>(<span class="str">"os.path"</span>)
+<span class="kw">пусть</span> путь = os.path.join(<span class="str">"папка"</span>, <span class="str">"файл.txt"</span>)
+
+<span class="kw">пусть</span> datetime = <span class="fn">подключить_питон</span>(<span class="str">"datetime"</span>)
+<span class="kw">пусть</span> сейчас = datetime.datetime.now()
+<span class="fn">лог</span>(сейчас.year, сейчас.month)
+</code></pre>
+
+<h2>Установка пакетов прямо из кода</h2>
+<pre><code><span class="fn">установить_пакет</span>(<span class="str">"numpy"</span>)
+<span class="kw">пусть</span> np = <span class="fn">подключить_питон</span>(<span class="str">"numpy"</span>)
+<span class="kw">пусть</span> a = np.array([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])
+<span class="fn">лог</span>(a.mean())
+</code></pre>
+
+<h2>Что доступно</h2>
+<div class="grid">
+  <div class="card"><h3>HTTP</h3><p>requests, httpx, aiohttp</p></div>
+  <div class="card"><h3>Парсинг</h3><p>beautifulsoup4, lxml, html5lib</p></div>
+  <div class="card"><h3>Data Science</h3><p>numpy, pandas, scipy, matplotlib</p></div>
+  <div class="card"><h3>ML/AI</h3><p>openai, torch, transformers, anthropic</p></div>
+  <div class="card"><h3>Telegram</h3><p>aiogram, python-telegram-bot</p></div>
+  <div class="card"><h3>Почта</h3><p>smtplib, imaplib</p></div>
+  <div class="card"><h3>PostgreSQL</h3><p>psycopg2, asyncpg</p></div>
+  <div class="card"><h3>Redis</h3><p>redis-py</p></div>
+</div>
+"""
+    вернуть страница("Python-мост", "/питон", контент)
+})
+
+// ----------------------------------------------------------------
+// Веб-фреймворк
+// ----------------------------------------------------------------
+app.маршрут("/веб", "GET", функция(з) {
+    пусть контент = """
+<h1>Веб-фреймворк</h1>
+<p class="subtitle">Маршруты, шаблоны, middleware, сессии.</p>
+
+<h2>Hello, web!</h2>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+
+app.<span class="fn">маршрут</span>(<span class="str">"/"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) {
+    <span class="kw">вернуть</span> <span class="str">"&lt;h1&gt;Привет, мир!&lt;/h1&gt;"</span>
+})
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)
+</code></pre>
+
+<h2>Параметры маршрута</h2>
+<pre><code>app.<span class="fn">маршрут</span>(<span class="str">"/users/&lt;id:int&gt;"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) {
+    <span class="kw">пусть</span> id = з[<span class="str">"параметры_маршрута"</span>][<span class="str">"id"</span>]
+    <span class="kw">вернуть</span> {<span class="str">"id"</span>: id, <span class="str">"имя"</span>: <span class="str">"Пользователь#"</span> + id}
+})
+</code></pre>
+
+<h2>Объект запроса</h2>
+<pre><code>з[<span class="str">"метод"</span>]              <span class="cmt">// "GET" / "POST"</span>
+з[<span class="str">"путь"</span>]              <span class="cmt">// "/users/42"</span>
+з[<span class="str">"параметры"</span>]         <span class="cmt">// {"имя": "Алиса"} — query</span>
+з[<span class="str">"json"</span>]              <span class="cmt">// тело как dict (если POST)</span>
+з[<span class="str">"заголовки"</span>]         <span class="cmt">// заголовки запроса</span>
+з[<span class="str">"сессия"</span>]            <span class="cmt">// сессионные данные</span>
+</code></pre>
+
+<h2>Возврат</h2>
+<pre><code><span class="kw">вернуть</span> <span class="str">"&lt;h1&gt;HTML&lt;/h1&gt;"</span>          <span class="cmt">// text/html</span>
+<span class="kw">вернуть</span> {<span class="str">"ок"</span>: истина}             <span class="cmt">// JSON</span>
+<span class="kw">вернуть</span> app.<span class="fn">json_ответ</span>(данные, <span class="num">201</span>)
+<span class="kw">вернуть</span> app.<span class="fn">редирект</span>(<span class="str">"/новый"</span>)
+<span class="kw">вернуть</span> app.<span class="fn">ошибка</span>(<span class="str">"Не найдено"</span>, <span class="num">404</span>)
+</code></pre>
+
+<h2>Шаблоны</h2>
+<pre><code><span class="kw">вернуть</span> app.<span class="fn">страница</span>(<span class="str">"index.html"</span>, {
+    <span class="str">"имя"</span>: <span class="str">"Алиса"</span>,
+    <span class="str">"товары"</span>: [<span class="str">"хлеб"</span>, <span class="str">"молоко"</span>]
+})
+</code></pre>
+
+<p>Внутри шаблона:</p>
+<pre><code>&lt;h1&gt;Привет, {{ имя }}&lt;/h1&gt;
+&lt;ul&gt;
+{% для т в товары %}
+  &lt;li&gt;{{ т }}&lt;/li&gt;
+{% конец %}
+&lt;/ul&gt;
+
+{% если имя == "Алиса" %}
+  &lt;p&gt;Это админ&lt;/p&gt;
+{% иначе %}
+  &lt;p&gt;Гость&lt;/p&gt;
+{% конец %}
+</code></pre>
+
+<h2>Middleware</h2>
+<pre><code>app.<span class="fn">использовать</span>(<span class="kw">функция</span>(з, след) {
+    <span class="fn">лог</span>(<span class="str">"["</span> + з[<span class="str">"метод"</span>] + <span class="str">"] "</span> + з[<span class="str">"путь"</span>])
+    <span class="kw">вернуть</span> <span class="fn">след</span>(з)
+})
+</code></pre>
+
+<h2>Сессии</h2>
+<pre><code>app.<span class="fn">секрет_сессий</span>(<span class="str">"супер-секретный-ключ"</span>)
+
+app.<span class="fn">маршрут</span>(<span class="str">"/вход"</span>, <span class="str">"POST"</span>, <span class="kw">функция</span>(з) {
+    з[<span class="str">"сессия"</span>][<span class="str">"вошёл"</span>] = истина
+    з[<span class="str">"сессия"</span>][<span class="str">"имя"</span>] = з[<span class="str">"json"</span>][<span class="str">"имя"</span>]
+    <span class="kw">вернуть</span> {<span class="str">"ок"</span>: истина}
+})
+</code></pre>
+
+<h2>Автодокументация</h2>
+<p>Все зарегистрированные маршруты автоматически доступны по <code>/docs</code>:</p>
+<pre><code>http://localhost:8000/docs</code></pre>
+"""
+    вернуть страница("Веб-фреймворк", "/веб", контент)
+})
+
+// ----------------------------------------------------------------
+// ORM
+// ----------------------------------------------------------------
+app.маршрут("/orm", "GET", функция(з) {
+    пусть контент = """
+<h1>ORM</h1>
+<p class="subtitle">Модели и запросы к SQLite без SQL.</p>
+
+<h2>Модель</h2>
+<pre><code><span class="kw">пусть</span> бд = <span class="fn">бд_открыть</span>(<span class="str">"app.db"</span>)
+
+<span class="kw">пусть</span> Пользователи = <span class="fn">создать_модель</span>(
+    имя = <span class="str">"Пользователь"</span>,
+    таблица = <span class="str">"users"</span>,
+    бд = бд,
+    поля = [
+        {<span class="str">"имя"</span>: <span class="str">"id"</span>, <span class="str">"тип"</span>: <span class="str">"целое"</span>, <span class="str">"первичный"</span>: истина, <span class="str">"авто"</span>: истина},
+        {<span class="str">"имя"</span>: <span class="str">"имя"</span>, <span class="str">"тип"</span>: <span class="str">"строка"</span>, <span class="str">"не_пусто"</span>: истина},
+        {<span class="str">"имя"</span>: <span class="str">"возраст"</span>, <span class="str">"тип"</span>: <span class="str">"целое"</span>, <span class="str">"по_умолчанию"</span>: <span class="num">0</span>},
+        {<span class="str">"имя"</span>: <span class="str">"город"</span>, <span class="str">"тип"</span>: <span class="str">"строка"</span>}
+    ]
+)
+
+Пользователи.<span class="fn">создать_таблицу</span>()
+</code></pre>
+
+<h2>CRUD</h2>
+<pre><code><span class="cmt">// Создать</span>
+<span class="kw">пусть</span> алиса = Пользователи.<span class="fn">создать</span>(имя = <span class="str">"Алиса"</span>, возраст = <span class="num">30</span>, город = <span class="str">"Москва"</span>)
+
+<span class="cmt">// Получить</span>
+<span class="kw">пусть</span> найденный = Пользователи.<span class="fn">получить</span>(алиса.id)
+
+<span class="cmt">// Обновить</span>
+алиса.<span class="fn">обновить</span>(город = <span class="str">"Питер"</span>)
+
+<span class="cmt">// Удалить</span>
+алиса.<span class="fn">удалить</span>()
+
+<span class="cmt">// Все</span>
+<span class="kw">пусть</span> все = Пользователи.<span class="fn">все</span>()
+
+<span class="cmt">// Количество</span>
+<span class="fn">лог</span>(Пользователи.<span class="fn">количество</span>())
+</code></pre>
+
+<h2>Запросы</h2>
+<pre><code><span class="kw">пусть</span> москвичи = Пользователи.<span class="fn">где</span>(<span class="str">'"город" = ?'</span>, [<span class="str">"Москва"</span>])
+<span class="kw">пусть</span> взрослые = Пользователи.<span class="fn">где</span>(<span class="str">'"возраст" >= ?'</span>, [<span class="num">18</span>])
+
+<span class="cmt">// Сортировка и цепочка</span>
+пусть топ = Пользователи.<span class="fn">где</span>(<span class="str">'"возраст" > ?'</span>, [<span class="num">20</span>])
+    .<span class="fn">сортировать</span>(<span class="str">"возраст"</span>, обратно = истина)
+    .<span class="fn">первые</span>(<span class="num">5</span>)
+
+<span class="cmt">// Агрегация</span>
+<span class="fn">лог</span>(взрослые.<span class="fn">количество</span>())
+<span class="fn">лог</span>(взрослые.<span class="fn">сумма</span>(<span class="str">"возраст"</span>))
+<span class="fn">лог</span>(взрослые.<span class="fn">среднее</span>(<span class="str">"возраст"</span>))
+<span class="fn">лог</span>(взрослые.<span class="fn">карта</span>(<span class="str">"имя"</span>))
+</code></pre>
+
+<h2>Один результат</h2>
+<pre><code><span class="kw">пусть</span> первый = Пользователи.<span class="fn">где</span>(<span class="str">'"город" = ?'</span>, [<span class="str">"Москва"</span>]).<span class="fn">первый</span>()
+
+<span class="cmt">// или напрямую</span>
+<span class="kw">пусть</span> один = Пользователи.<span class="fn">один_где</span>(<span class="str">'"имя" = ?'</span>, [<span class="str">"Алиса"</span>])
+</code></pre>
+"""
+    вернуть страница("ORM", "/orm", контент)
+})
+
+// ----------------------------------------------------------------
+// Тестирование
+// ----------------------------------------------------------------
+app.маршрут("/тесты", "GET", функция(з) {
+    пусть контент = """
+<h1>Тестирование</h1>
+<p class="subtitle">Декоратор <code>@тест</code> + ассерты + красивый отчёт.</p>
+
+<h2>Простой тест</h2>
+<pre><code><span class="kw">@тест</span>(<span class="str">"сложение работает"</span>)
+<span class="kw">функция</span> <span class="fn">т1</span>() {
+    <span class="fn">ожидать_равно</span>(<span class="num">2</span> + <span class="num">2</span>, <span class="num">4</span>)
+}
+
+<span class="kw">@тест</span>(<span class="str">"строка переворачивается"</span>)
+<span class="kw">функция</span> <span class="fn">т2</span>() {
+    <span class="fn">ожидать_равно</span>(<span class="str">"abc"</span>.<span class="fn">обратить</span>(), <span class="str">"cba"</span>)
+}
+</code></pre>
+
+<h2>Ассерты</h2>
+<pre><code><span class="fn">ожидать</span>(условие, <span class="str">"сообщение"</span>)
+<span class="fn">ожидать_равно</span>(a, b)
+<span class="fn">ожидать_не_равно</span>(a, b)
+<span class="fn">ожидать_истина</span>(v)
+<span class="fn">ожидать_ложь</span>(v)
+<span class="fn">ожидать_содержит</span>(коллекция, элемент)
+<span class="fn">ожидать_ошибку</span>(функ() { ... })
+</code></pre>
+
+<h2>Проверка ошибок</h2>
+<pre><code><span class="kw">@тест</span>(<span class="str">"деление на ноль бросает"</span>)
+<span class="kw">функция</span> <span class="fn">т3</span>() {
+    <span class="fn">ожидать_ошибку</span>(<span class="kw">функ</span>() { <span class="kw">вернуть</span> <span class="num">1</span> / <span class="num">0</span> })
+}
+</code></pre>
+
+<h2>Запуск</h2>
+<pre><code><span class="fn">запустить_тесты</span>()
+</code></pre>
+
+<p>Или через CLI:</p>
+<pre><code>SkyForge test tests.skf</code></pre>
+
+<h2>Вывод</h2>
+<pre><code>═══════════════════════════════════════════════════════════
+  Запуск 3 тестов
+═══════════════════════════════════════════════════════════
+  ✅ сложение работает                        0.02 мс
+  ✅ строка переворачивается                  0.01 мс
+  ✅ деление на ноль бросает                  0.03 мс
+═══════════════════════════════════════════════════════════
+  Итого: 3 ✅  0 ❌  из 3
+  🎉 Все тесты пройдены
+═══════════════════════════════════════════════════════════
+</code></pre>
+"""
+    вернуть страница("Тестирование", "/тесты", контент)
+})
+
+// ----------------------------------------------------------------
+// Примеры
+// ----------------------------------------------------------------
+app.маршрут("/примеры", "GET", функция(з) {
+    пусть контент = """
+<h1>Готовые программы</h1>
+<p class="subtitle">Копируй и запускай.</p>
+
+<h2>TODO REST API</h2>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+<span class="kw">пусть</span> бд = <span class="fn">бд_открыть</span>(<span class="str">"todos.db"</span>)
+
+<span class="kw">пусть</span> T = <span class="fn">создать_модель</span>(имя = <span class="str">"T"</span>, таблица = <span class="str">"todos"</span>, бд = бд, поля = [
+    {<span class="str">"имя"</span>: <span class="str">"id"</span>, <span class="str">"тип"</span>: <span class="str">"целое"</span>, <span class="str">"первичный"</span>: истина, <span class="str">"авто"</span>: истина},
+    {<span class="str">"имя"</span>: <span class="str">"текст"</span>, <span class="str">"тип"</span>: <span class="str">"строка"</span>},
+    {<span class="str">"имя"</span>: <span class="str">"готово"</span>, <span class="str">"тип"</span>: <span class="str">"булево"</span>, <span class="str">"по_умолчанию"</span>: ложь}
+])
+T.<span class="fn">создать_таблицу</span>()
+
+app.<span class="fn">маршрут</span>(<span class="str">"/todos"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) { <span class="kw">вернуть</span> T.<span class="fn">все</span>() })
+app.<span class="fn">маршрут</span>(<span class="str">"/todos"</span>, <span class="str">"POST"</span>, <span class="kw">функция</span>(з) {
+    <span class="kw">вернуть</span> T.<span class="fn">создать</span>(текст = з[<span class="str">"json"</span>][<span class="str">"текст"</span>])
+})
+app.<span class="fn">маршрут</span>(<span class="str">"/todos/&lt;id:int&gt;"</span>, <span class="str">"DELETE"</span>, <span class="kw">функция</span>(з) {
+    T.<span class="fn">удалить</span>(з[<span class="str">"параметры_маршрута"</span>][<span class="str">"id"</span>])
+    <span class="kw">вернуть</span> {<span class="str">"ок"</span>: истина}
+})
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)
+</code></pre>
+
+<h2>Парсер CSV с отчётом</h2>
+<pre><code><span class="kw">пусть</span> строки = <span class="fn">csv_читать</span>(<span class="str">"продажи.csv"</span>)
+<span class="kw">пусть</span> итог = {}
+
+<span class="kw">для</span> s <span class="kw">в</span> строки[<span class="num">1</span>:] {
+    <span class="kw">пусть</span> город = s[<span class="num">2</span>]
+    итог[город] = итог.<span class="fn">получить</span>(город, <span class="num">0</span>) + <span class="fn">целое</span>(s[<span class="num">3</span>])
+}
+
+<span class="fn">лог</span>(<span class="str">"Продажи по городам:"</span>)
+<span class="kw">для</span> п <span class="kw">в</span> итог.<span class="fn">элементы</span>().<span class="fn">сортировать_по</span>(<span class="kw">функ</span>(x) { <span class="kw">вернуть</span> -x[<span class="num">1</span>] }) {
+    <span class="fn">лог</span>(<span class="str">"  "</span>, п[<span class="num">0</span>], <span class="str">":"</span>, п[<span class="num">1</span>])
+}
+</code></pre>
+
+<h2>Telegram-бот (через Python-мост)</h2>
+<pre><code><span class="fn">установить_пакет</span>(<span class="str">"aiogram"</span>)
+<span class="kw">пусть</span> aiogram = <span class="fn">подключить_питон</span>(<span class="str">"aiogram"</span>)
+
+<span class="cmt">// ... используем aiogram напрямую</span>
+</code></pre>
+
+<h2>Парсер сайтов</h2>
+<pre><code><span class="fn">установить_пакет</span>(<span class="str">"requests"</span>)
+<span class="fn">установить_пакет</span>(<span class="str">"beautifulsoup4"</span>)
+
+<span class="kw">пусть</span> requests = <span class="fn">подключить_питон</span>(<span class="str">"requests"</span>)
+<span class="kw">пусть</span> bs4 = <span class="fn">подключить_питон</span>(<span class="str">"bs4"</span>)
+
+<span class="kw">пусть</span> html = requests.get(<span class="str">"https://news.site"</span>).text
+<span class="kw">пусть</span> soup = bs4.BeautifulSoup(html, <span class="str">"html.parser"</span>)
+
+<span class="kw">для</span> h <span class="kw">в</span> soup.find_all(<span class="str">"h2"</span>) {
+    <span class="fn">лог</span>(h.text)
+}
+</code></pre>
+
+<h2>Сортировка файлов по расширению</h2>
+<pre><code><span class="kw">пусть</span> shutil = <span class="fn">подключить_питон</span>(<span class="str">"shutil"</span>)
+<span class="kw">пусть</span> папка = <span class="fn">ввод</span>(<span class="str">"Папка: "</span>)
+
+<span class="kw">для</span> f <span class="kw">в</span> <span class="fn">список_файлов</span>(папка) {
+    <span class="kw">пусть</span> ext = <span class="fn">расширение</span>(f).<span class="fn">обрезать</span>(<span class="str">"."</span>)
+    <span class="kw">если</span> ext == <span class="str">""</span> { ext = <span class="str">"без_расширения"</span> }
+    <span class="fn">создать_папку</span>(<span class="fn">объединить_путь</span>(папка, ext))
+    shutil.move(
+        <span class="fn">объединить_путь</span>(папка, f),
+        <span class="fn">объединить_путь</span>(папка, ext, f)
+    )
+}
+</code></pre>
+"""
+    вернуть страница("Примеры", "/примеры", контент)
+})
+
+// ----------------------------------------------------------------
+// Health для Render
+// ----------------------------------------------------------------
+app.маршрут("/health", "GET", функция(з) {
+    вернуть "ok"
+})
+
+// ----------------------------------------------------------------
+// 404
+// ----------------------------------------------------------------
+app.маршрут("/<path>", "GET", функция(з) {
+    пусть контент = """
+<h1>404 — не найдено</h1>
+<p>Такой страницы нет. <a href="/">Вернуться на главную</a>.</p>
+"""
+    вернуть app.ошибка(страница("404", "/", контент), 404)
+})
+
+// ----------------------------------------------------------------
+// Запуск
+// ----------------------------------------------------------------
+лог("📚 SkyForge Documentation")
+лог("   Порт:", порт_сервера())
+лог("   Хост:", хост_сервера())
+лог("   Открой: http://localhost:" + порт_сервера() + "/")
+
+app.запустить(порт_сервера(), блокировать = истина)
