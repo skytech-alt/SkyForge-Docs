@@ -140,7 +140,7 @@ hr { border: none; border-top: 1px solid #2a2f45; margin: 32px 0; }
     {{ содержимое }}
     <hr>
     <p style="color:#8b93a7;font-size:13px">
-      SkyForge v1.0.0 · <a href="https://pypi.org/project/skyforge-lang/">PyPI</a>
+      SkyForge v1.0.0 <a href="https://pypi.org/project/skyforge-lang/">PyPI</a>
       · <a href="https://github.com/">GitHub</a>
     </p>
   </main>
