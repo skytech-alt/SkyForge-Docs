@@ -1,12 +1,12 @@
 // ================================================================
-// SkyForge Documentation v2 — сайт документации на самом SkyForge
+// SkyForge Documentation v2.1 — сайт документации на самом SkyForge
 // ================================================================
 
 пусть app = приложение()
 app.имя("SkyForge — документация")
 app.отладка(истина)
 
-пусть ВЕРСИЯ = "1.0.4"
+пусть ВЕРСИЯ = "1.0.5"
 пусть РЕПО = "https://github.com/skytech-alt/SkyForge-Docs"
 пусть ПИПИ = "https://pypi.org/project/skyforge-lang/"
 
@@ -33,15 +33,11 @@ body {
 a { color: var(--accent-2); text-decoration: none; transition: color .15s; }
 a:hover { color: var(--accent); }
 ::selection { background: var(--accent); color: #fff; }
-
-/* layout */
 .layout {
     display: grid;
     grid-template-columns: 260px minmax(0, 1fr) 220px;
     max-width: 1400px; margin: 0 auto; min-height: 100vh;
 }
-
-/* sidebar */
 .sidebar {
     background: var(--panel); border-right: 1px solid var(--border);
     padding: 20px 0; position: sticky; top: 0; height: 100vh;
@@ -66,7 +62,6 @@ a:hover { color: var(--accent); }
 }
 .search-wrap input:focus { border-color: var(--accent); }
 .search-wrap input::placeholder { color: var(--muted); }
-
 .nav-group {
     padding: 14px 22px 6px; font-size: 10px; text-transform: uppercase;
     color: var(--muted); letter-spacing: 1.2px; font-weight: 700;
@@ -81,8 +76,6 @@ a:hover { color: var(--accent); }
     color: var(--accent-2); background: var(--panel-2);
     border-left-color: var(--accent);
 }
-
-/* content */
 .content { padding: 42px 48px 80px; min-width: 0; }
 .content h1 {
     font-size: 32px; margin-bottom: 6px; color: #fff;
@@ -93,16 +86,13 @@ a:hover { color: var(--accent); }
 }
 .content h2 {
     font-size: 22px; margin: 44px 0 14px; color: #fff;
-    letter-spacing: -0.3px; padding-top: 8px;
-    scroll-margin-top: 20px;
+    letter-spacing: -0.3px; padding-top: 8px; scroll-margin-top: 20px;
 }
 .content h3 { font-size: 16.5px; margin: 24px 0 10px; color: var(--type); }
 .content p { margin-bottom: 12px; color: #d0d4e0; }
 .content ul, .content ol { margin: 12px 0 14px 22px; }
 .content li { margin-bottom: 5px; color: #d0d4e0; }
 .content strong { color: #fff; font-weight: 600; }
-
-/* code */
 pre {
     position: relative; background: var(--code-bg);
     border: 1px solid var(--border); border-radius: var(--r);
@@ -118,7 +108,6 @@ code {
 }
 .kw { color: var(--kw); } .str { color: var(--str); } .num { color: var(--num); }
 .cmt { color: var(--cmt); } .fn { color: var(--fn); } .type { color: var(--type); }
-
 .copy-btn {
     position: absolute; top: 8px; right: 10px;
     background: var(--panel-2); color: var(--muted);
@@ -129,8 +118,6 @@ code {
 pre:hover .copy-btn { opacity: 1; }
 .copy-btn:hover { color: var(--accent-2); border-color: var(--accent); }
 .copy-btn.done { color: var(--success); border-color: var(--success); }
-
-/* cards */
 .card {
     background: var(--panel); border: 1px solid var(--border);
     border-radius: var(--r); padding: 18px 22px; margin: 14px 0;
@@ -138,13 +125,11 @@ pre:hover .copy-btn { opacity: 1; }
 }
 .card:hover { border-color: #353c56; }
 .card h3 { margin-top: 0; color: var(--type); font-size: 15px; }
-
 .grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 14px; margin: 20px 0;
 }
 .grid .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
 .tag {
     display: inline-block; background: var(--panel-2); color: var(--accent-2);
     padding: 2px 9px; border-radius: 12px; font-size: 11.5px;
@@ -156,8 +141,6 @@ pre:hover .copy-btn { opacity: 1; }
     font-size: 11px; font-weight: 700; vertical-align: middle;
     letter-spacing: 0.3px;
 }
-
-/* hero */
 .hero {
     padding: 60px 0 50px;
     background: radial-gradient(ellipse at top left, rgba(139,108,255,.15), transparent 60%);
@@ -170,19 +153,14 @@ pre:hover .copy-btn { opacity: 1; }
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text; letter-spacing: -1.5px;
 }
-.hero p {
-    font-size: 17px; color: var(--muted); max-width: 640px;
-    margin-bottom: 28px;
-}
+.hero p { font-size: 17px; color: var(--muted); max-width: 640px; margin-bottom: 28px; }
 .hero .cta { display: flex; gap: 10px; flex-wrap: wrap; }
 .hero .cta a {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 10px 18px; border-radius: 8px; font-size: 14px;
     font-weight: 600; transition: all .15s;
 }
-.hero .cta a.primary {
-    background: var(--accent); color: #fff;
-}
+.hero .cta a.primary { background: var(--accent); color: #fff; }
 .hero .cta a.primary:hover {
     background: var(--accent-2); transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(139,108,255,.35);
@@ -192,8 +170,6 @@ pre:hover .copy-btn { opacity: 1; }
     border: 1px solid var(--border);
 }
 .hero .cta a.ghost:hover { border-color: var(--accent); color: var(--accent-2); }
-
-/* toc */
 .toc {
     position: sticky; top: 20px; padding: 42px 20px 20px 4px;
     font-size: 13px; max-height: 100vh; overflow-y: auto;
@@ -208,8 +184,6 @@ pre:hover .copy-btn { opacity: 1; }
     margin-left: -12px; transition: all .15s; line-height: 1.4;
 }
 .toc-item:hover { color: var(--accent-2); border-left-color: var(--accent); }
-
-/* footer */
 .footer {
     grid-column: 1 / -1;
     padding: 24px 48px; border-top: 1px solid var(--border);
@@ -218,10 +192,7 @@ pre:hover .copy-btn { opacity: 1; }
 }
 .footer a { color: var(--muted); }
 .footer a:hover { color: var(--accent-2); }
-
 hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
-
-/* mobile */
 @media (max-width: 1100px) {
     .layout { grid-template-columns: 240px minmax(0,1fr); }
     .toc { display: none; }
@@ -237,11 +208,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 """
 
 // ================================================================
-// JS — кнопка копирования + TOC + поиск
+// JS — копирование кода, TOC, поиск
 // ================================================================
 пусть JS = """
 (function(){
-    // Кнопка «Копировать» на каждом pre
     document.querySelectorAll('pre').forEach(function(pre){
         if (pre.querySelector('.copy-btn')) return;
         var btn = document.createElement('button');
@@ -267,8 +237,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         });
         pre.appendChild(btn);
     });
-
-    // Оглавление справа
     var toc = document.getElementById('toc');
     var content = document.querySelector('.content');
     if (toc && content) {
@@ -278,10 +246,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         } else {
             headings.forEach(function(h, i){
                 if (!h.id) {
-                    h.id = 'h-' + i + '-' + h.textContent
-                        .toLowerCase()
-                        .replace(/[^a-zа-я0-9]+/gi, '-')
-                        .replace(/^-|-$/g, '');
+                    h.id = 'h-' + i + '-' + h.textContent.toLowerCase()
+                        .replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-|-$/g, '');
                 }
                 var a = document.createElement('a');
                 a.href = '#' + h.id;
@@ -291,8 +257,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
             });
         }
     }
-
-    // Поиск в сайдбаре
     var s = document.getElementById('search');
     if (s) {
         s.addEventListener('input', function(){
@@ -321,6 +285,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 // ================================================================
 пусть NAV = [
     ["Начало", [
+        ["/playground", "▶ Плейграунд"],
         ["/", "Введение"],
         ["/установка", "Установка"],
         ["/быстрый-старт", "Быстрый старт"],
@@ -361,6 +326,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     содержимое = содержимое.заменить("{{ репо }}", РЕПО)
     содержимое = содержимое.заменить("{{ пипи }}", ПИПИ)
     содержимое = содержимое.заменить("{{ версия }}", ВЕРСИЯ)
+
     пусть меню = ""
     для группа в NAV {
         пусть items_html = ""
@@ -433,8 +399,8 @@ app.маршрут("/", "GET", функция(з) {
   <h1>SkyForge</h1>
   <p>Русскоязычный язык программирования. ООП, async, генераторы, pattern matching, веб-фреймворк, ORM и тесты — в одном языке, без импортов десятка библиотек.</p>
   <div class="cta">
-    <a href="/быстрый-старт" class="primary">→ Быстрый старт</a>
-    <a href="/установка" class="ghost">📦 Установка</a>
+    <a href="/playground" class="primary">▶ Попробовать в браузере</a>
+    <a href="/быстрый-старт" class="ghost">→ Быстрый старт</a>
     <a href="{{ репо }}" class="ghost" target="_blank">★ GitHub</a>
   </div>
 </div>
@@ -453,7 +419,7 @@ app.маршрут("/", "GET", функция(з) {
   </div>
   <div class="card">
     <h3>🌐 Веб</h3>
-    <p>Маршруты, шаблоны <code>{% raw %}{{ }}&#123;% endraw %}</code>, JSON API, статика, middleware, сессии, автодокументация <code>/docs</code>.</p>
+    <p>Маршруты, шаблоны, JSON API, статика, middleware, сессии, автодокументация <code>/docs</code>.</p>
   </div>
   <div class="card">
     <h3>🗄 ORM</h3>
@@ -514,6 +480,10 @@ app.маршрут("/", "GET", функция(з) {
 
 <h2>Куда дальше</h2>
 <div class="grid">
+  <a href="/playground" class="card" style="display:block">
+    <h3>▶ Плейграунд</h3>
+    <p>Напиши и запусти код прямо в браузере.</p>
+  </a>
   <a href="/быстрый-старт" class="card" style="display:block">
     <h3>⚡ Быстрый старт</h3>
     <p>От установки до первого API за 5 минут.</p>
@@ -526,13 +496,23 @@ app.маршрут("/", "GET", функция(з) {
     <h3>📋 Шпаргалка</h3>
     <p>Весь синтаксис на одной странице.</p>
   </a>
-  <a href="/faq" class="card" style="display:block">
-    <h3>❓ FAQ</h3>
-    <p>Частые вопросы и ответы.</p>
-  </a>
 </div>
 """
     вернуть страница("Введение", "/", контент)
+})
+
+// ================================================================
+// ПЛЕЙГРАУНД
+// ================================================================
+app.маршрут("/playground", "GET", функция(з) {
+    пусть путь = "docs-app/playground.html"
+    если не существует(путь) {
+        путь = "playground.html"
+    }
+    если не существует(путь) {
+        вернуть app.ошибка("playground.html не найден", 500)
+    }
+    вернуть app.html_ответ(читать_файл(путь, "utf-8"))
 })
 
 // ================================================================
@@ -554,7 +534,7 @@ app.маршрут("/установка", "GET", функция(з) {
 
 <h2>Проверка</h2>
 <pre><code>SkyForge version
-<span class="cmt"># SkyForge 1.0.4</span>
+<span class="cmt"># SkyForge 1.0.5</span>
 <span class="cmt"># Python: 3.12.0</span>
 <span class="cmt"># Платформа: win32</span></code></pre>
 
@@ -608,13 +588,11 @@ app.маршрут("/быстрый-старт", "GET", функция(з) {
 <pre><code>pip install skyforge-lang</code></pre>
 
 <h2>2. Первый скрипт</h2>
-<p>Создай <code>hello.skf</code>:</p>
 <pre><code><span class="fn">лог</span>(<span class="str">"Привет, мир!"</span>)
 
 <span class="kw">пусть</span> имя = <span class="fn">ввод</span>(<span class="str">"Как тебя зовут? "</span>)
 <span class="fn">лог</span>(<span class="str">"Привет, {имя}!"</span>)</code></pre>
 
-<p>Запусти:</p>
 <pre><code>SkyForge run hello.skf</code></pre>
 
 <h2>3. Переменные и типы</h2>
@@ -677,15 +655,6 @@ app.<span class="fn">маршрут</span>(<span class="str">"/todos"</span>, <s
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
-<p>Запусти:</p>
-<pre><code>SkyForge web todos.skf
-
-<span class="cmt"># в другом терминале:</span>
-curl http://localhost:8000/todos
-curl -X POST http://localhost:8000/todos \
-     -H "Content-Type: application/json" \
-     -d '{"текст":"купить хлеб"}'</code></pre>
-
 <h2>8. Тесты</h2>
 <pre><code><span class="kw">@тест</span>(<span class="str">"сложение работает"</span>)
 <span class="kw">функция</span> <span class="fn">т1</span>() {
@@ -694,13 +663,11 @@ curl -X POST http://localhost:8000/todos \
 
 <span class="fn">запустить_тесты</span>()</code></pre>
 
-<pre><code>SkyForge test tests.skf</code></pre>
-
 <h2>Что дальше</h2>
 <ul>
+  <li><a href="/playground">Плейграунд</a> — попробуй без установки</li>
   <li><a href="/синтаксис">Синтаксис</a> — весь язык в деталях</li>
   <li><a href="/веб">Веб-фреймворк</a> — маршруты, шаблоны, сессии</li>
-  <li><a href="/orm">ORM</a> — работа с базами данных</li>
   <li><a href="/рецепты">Рецепты</a> — готовые сниппеты</li>
 </ul>
 """
@@ -899,8 +866,7 @@ app.маршрут("/классы", "GET", функция(з) {
 }
 
 <span class="kw">пусть</span> с = <span class="type">Собака</span>(<span class="str">"Шарик"</span>)
-<span class="fn">лог</span>(с.<span class="fn">представиться</span>())   <span class="cmt">// Я Шарик, говорю: Гав!</span>
-<span class="fn">лог</span>(с.<span class="fn">сидеть</span>())           <span class="cmt">// Шарик сидит</span></code></pre>
+<span class="fn">лог</span>(с.<span class="fn">представиться</span>())   <span class="cmt">// Я Шарик, говорю: Гав!</span></code></pre>
 
 <h2>Вызов родителя</h2>
 <pre><code><span class="kw">класс</span> <span class="type">Кот</span> <span class="kw">наследник</span> <span class="type">Животное</span> {
@@ -987,7 +953,7 @@ app.маршрут("/исключения", "GET", функция(з) {
     <span class="kw">если</span> возраст < <span class="num">0</span> {
         <span class="kw">бросить</span> <span class="str">"Возраст не может быть отрицательным"</span>
     }
-    вернуть возраст
+    <span class="kw">вернуть</span> возраст
 }
 
 <span class="kw">попробовать</span> {
@@ -1475,7 +1441,7 @@ app.<span class="fn">маршрут</span>(<span class="str">"/пост/&lt;slug
 <pre><code>з[<span class="str">"метод"</span>]              <span class="cmt">// "GET" / "POST"</span>
 з[<span class="str">"путь"</span>]              <span class="cmt">// "/users/42"</span>
 з[<span class="str">"параметры"</span>]         <span class="cmt">// {"имя": "Алиса"} — query</span>
-з[<span class="str">"json"</span>]              <span class="cmt">// тело как dict (если POST с JSON)</span>
+з[<span class="str">"json"</span>]              <span class="cmt">// тело как dict</span>
 з[<span class="str">"тело"</span>]              <span class="cmt">// тело как строка</span>
 з[<span class="str">"заголовки"</span>]         <span class="cmt">// заголовки запроса</span>
 з[<span class="str">"параметры_маршрута"</span>] <span class="cmt">// параметры из &lt;id&gt;</span>
@@ -1495,22 +1461,15 @@ app.<span class="fn">маршрут</span>(<span class="str">"/пост/&lt;slug
     <span class="str">"товары"</span>: [<span class="str">"хлеб"</span>, <span class="str">"молоко"</span>]
 })</code></pre>
 
-<p>Внутри шаблона — подстановки <code>&#123;&#123; var &#125;&#125;</code> и блоки <code>&#123;% %&#125;</code>:</p>
-<pre><code>&lt;h1&gt;Привет, &#123;&#123; имя &#125;&#125;&lt;/h1&gt;
+<p>Внутри шаблона — подстановки:</p>
+<pre><code>&lt;h1&gt;Привет, имя&lt;/h1&gt;
 &lt;ul&gt;
-&#123;% для т в товары %&#125;
-  &lt;li&gt;&#123;&#123; т &#125;&#125;&lt;/li&gt;
-&#123;% конец %&#125;
-&lt;/ul&gt;
-
-&#123;% если имя == "Алиса" %&#125;
-  &lt;p&gt;Это админ&lt;/p&gt;
-&#123;% иначе %&#125;
-  &lt;p&gt;Гость&lt;/p&gt;
-&#123;% конец %&#125;</code></pre>
+  &lt;li&gt;хлеб&lt;/li&gt;
+  &lt;li&gt;молоко&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
 
 <p>Или шаблон из строки:</p>
-<pre><code><span class="kw">вернуть</span> app.<span class="fn">шаблон_из</span>(<span class="str">"&lt;h1&gt;Привет, &#123;&#123; имя &#125;&#125;&lt;/h1&gt;"</span>, {<span class="str">"имя"</span>: <span class="str">"Мир"</span>})</code></pre>
+<pre><code><span class="kw">вернуть</span> app.<span class="fn">шаблон_из</span>(<span class="str">"&lt;h1&gt;Привет&lt;/h1&gt;"</span>, {})</code></pre>
 
 <h2>Middleware</h2>
 <pre><code>app.<span class="fn">использовать</span>(<span class="kw">функция</span>(з, след) {
@@ -1535,20 +1494,11 @@ app.<span class="fn">маршрут</span>(<span class="str">"/вход"</span>,
     з[<span class="str">"сессия"</span>][<span class="str">"вошёл"</span>] = истина
     з[<span class="str">"сессия"</span>][<span class="str">"имя"</span>] = з[<span class="str">"json"</span>][<span class="str">"имя"</span>]
     <span class="kw">вернуть</span> {<span class="str">"ок"</span>: истина}
-})
-
-app.<span class="fn">маршрут</span>(<span class="str">"/выход"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) {
-    з[<span class="str">"сессия"</span>].<span class="fn">очистить</span>()
-    <span class="kw">вернуть</span> app.<span class="fn">редирект</span>(<span class="str">"/"</span>)
 })</code></pre>
 
 <h2>Автодокументация</h2>
 <p>Все маршруты доступны на <code>/docs</code>:</p>
 <pre><code>http://localhost:8000/docs</code></pre>
-
-<h2>Статика</h2>
-<pre><code>app.<span class="fn">статика</span>(<span class="str">"/static"</span>, <span class="str">"public"</span>)
-<span class="cmt">// /static/style.css → public/style.css</span></code></pre>
 
 <h2>Деплой на Render</h2>
 <pre><code><span class="cmt"># render.yaml</span>
@@ -1610,14 +1560,10 @@ app.маршрут("/orm", "GET", функция(з) {
 <span class="kw">пусть</span> все = Пользователи.<span class="fn">все</span>()
 
 <span class="cmt">// количество</span>
-<span class="fn">лог</span>(Пользователи.<span class="fn">количество</span>())
-
-<span class="cmt">// очистить</span>
-Пользователи.<span class="fn">очистить</span>()</code></pre>
+<span class="fn">лог</span>(Пользователи.<span class="fn">количество</span>())</code></pre>
 
 <h2>Запросы</h2>
-<pre><code><span class="cmt">// где с параметрами</span>
-<span class="kw">пусть</span> москвичи = Пользователи.<span class="fn">где</span>(<span class="str">'"город" = ?'</span>, [<span class="str">"Москва"</span>])
+<pre><code><span class="kw">пусть</span> москвичи = Пользователи.<span class="fn">где</span>(<span class="str">'"город" = ?'</span>, [<span class="str">"Москва"</span>])
 <span class="kw">пусть</span> взрослые = Пользователи.<span class="fn">где</span>(<span class="str">'"возраст" >= ?'</span>, [<span class="num">18</span>])
 
 <span class="cmt">// сортировка и цепочка</span>
@@ -1627,10 +1573,10 @@ app.маршрут("/orm", "GET", функция(з) {
     .<span class="fn">первые</span>(<span class="num">5</span>)
 
 <span class="cmt">// агрегация</span>
-взрослые.<span class="fn">количество</span>()          <span class="cmt">// сколько</span>
-взрослые.<span class="fn">сумма</span>(<span class="str">"возраст"</span>)         <span class="cmt">// сумма</span>
-взрослые.<span class="fn">среднее</span>(<span class="str">"возраст"</span>)       <span class="cmt">// среднее</span>
-взрослые.<span class="fn">карта</span>(<span class="str">"имя"</span>)            <span class="cmt">// список имён</span>
+взрослые.<span class="fn">количество</span>()
+взрослые.<span class="fn">сумма</span>(<span class="str">"возраст"</span>)
+взрослые.<span class="fn">среднее</span>(<span class="str">"возраст"</span>)
+взрослые.<span class="fn">карта</span>(<span class="str">"имя"</span>)
 
 <span class="cmt">// один результат</span>
 <span class="kw">пусть</span> один = Пользователи.<span class="fn">один_где</span>(<span class="str">'"имя" = ?'</span>, [<span class="str">"Алиса"</span>])</code></pre>
@@ -1799,7 +1745,7 @@ app.маршрут("/тесты", "GET", функция(з) {
 <span class="fn">ожидать_истина</span>(v)
 <span class="fn">ожидать_ложь</span>(v)
 <span class="fn">ожидать_содержит</span>(коллекция, элемент)
-<span class="fn">ожидать_ошибку</span>(<span class="kw">функ</span>() { <span class="cmt">/* код, который бросает */</span> })</code></pre>
+<span class="fn">ожидать_ошибку</span>(<span class="kw">функ</span>() { <span class="cmt">/* код */</span> })</code></pre>
 
 <h2>Проверка ошибок</h2>
 <pre><code><span class="kw">@тест</span>(<span class="str">"деление на ноль бросает"</span>)
@@ -1837,12 +1783,6 @@ Users.<span class="fn">создать_таблицу</span>()
 <span class="kw">функция</span> <span class="fn">т_создать</span>() {
     <span class="kw">пусть</span> u = Users.<span class="fn">создать</span>(имя = <span class="str">"Тест"</span>)
     <span class="fn">ожидать</span>(u.id > <span class="num">0</span>, <span class="str">"id должен быть > 0"</span>)
-}
-
-<span class="kw">@тест</span>(<span class="str">"поиск по имени"</span>)
-<span class="kw">функция</span> <span class="fn">т_поиск</span>() {
-    <span class="kw">пусть</span> u = Users.<span class="fn">один_где</span>(<span class="str">'"имя" = ?'</span>, [<span class="str">"Тест"</span>])
-    <span class="fn">ожидать_равно</span>(u.имя, <span class="str">"Тест"</span>)
 }
 
 <span class="fn">запустить_тесты</span>()
@@ -1884,7 +1824,7 @@ app.маршрут("/рецепты", "GET", функция(з) {
 
 <span class="kw">пусть</span> данные = <span class="fn">получить</span>(<span class="str">"https://api.site/users"</span>)</code></pre>
 
-<h2>3. Рекурсивная сортировка файлов по расширению</h2>
+<h2>3. Сортировка файлов по расширению</h2>
 <pre><code><span class="kw">пусть</span> shutil = <span class="fn">подключить_питон</span>(<span class="str">"shutil"</span>)
 <span class="kw">пусть</span> папка = <span class="fn">ввод</span>(<span class="str">"Папка: "</span>)
 
@@ -1921,7 +1861,7 @@ app.маршрут("/рецепты", "GET", функция(з) {
 
 asyncio.run(dp.start_polling(bot))</code></pre>
 
-<h2>6. Генерация отчёта в HTML</h2>
+<h2>6. Генерация HTML-отчёта</h2>
 <pre><code><span class="kw">пусть</span> данные = [
     {<span class="str">"имя"</span>: <span class="str">"Алиса"</span>, <span class="str">"продажи"</span>: <span class="num">1500</span>},
     {<span class="str">"имя"</span>: <span class="str">"Боб"</span>, <span class="str">"продажи"</span>: <span class="num">2300</span>}
@@ -1935,7 +1875,7 @@ asyncio.run(dp.start_polling(bot))</code></pre>
 <span class="fn">писать_файл</span>(<span class="str">"отчёт.html"</span>,
     <span class="str">"&lt;table&gt;&lt;tr&gt;&lt;th&gt;Имя&lt;/th&gt;&lt;th&gt;Продажи&lt;/th&gt;&lt;/tr&gt;"</span> + строки + <span class="str">"&lt;/table&gt;"</span>)</code></pre>
 
-<h2>7. Sitemap и robots.txt для сайта</h2>
+<h2>7. Sitemap для сайта</h2>
 <pre><code>app.<span class="fn">маршрут</span>(<span class="str">"/sitemap.xml"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) {
     <span class="kw">пусть</span> urls = [<span class="str">"/"</span>, <span class="str">"/о-нас"</span>, <span class="str">"/контакты"</span>]
     <span class="kw">пусть</span> xml = <span class="str">"&lt;?xml version='1.0'?&gt;&lt;urlset&gt;"</span>
@@ -1943,7 +1883,7 @@ asyncio.run(dp.start_polling(bot))</code></pre>
         xml = xml + <span class="str">"&lt;url&gt;&lt;loc&gt;https://сайт.ру"</span> + u + <span class="str">"&lt;/loc&gt;&lt;/url&gt;"</span>
     }
     xml = xml + <span class="str">"&lt;/urlset&gt;"</span>
-    <span class="kw">вернуть</span> (<span class="num">200</span>, <span class="str">"application/xml"</span>, xml)
+    <span class="kw">вернуть</span> app.<span class="fn">xml_ответ</span>(xml, <span class="num">200</span>)
 })</code></pre>
 
 <h2>8. Кеширование тяжёлых вычислений</h2>
@@ -1955,16 +1895,7 @@ asyncio.run(dp.start_polling(bot))</code></pre>
 
 <span class="fn">лог</span>(<span class="fn">фибо</span>(<span class="num">100</span>))   <span class="cmt">// мгновенно благодаря кешу</span></code></pre>
 
-<h2>9. Таймер выполнения</h2>
-<pre><code><span class="kw">@таймер_декоратор</span>
-<span class="kw">функция</span> <span class="fn">тяжёлая_операция</span>() {
-    <span class="fn">спать</span>(<span class="num">2</span>)
-}
-
-<span class="fn">тяжёлая_операция</span>()
-<span class="cmt">// [таймер] тяжёлая_операция: 2001.23 мс</span></code></pre>
-
-<h2>10. Чтение и запись JSON-конфига</h2>
+<h2>9. Чтение и запись JSON-конфига</h2>
 <pre><code><span class="kw">пусть</span> конфиг = {}
 <span class="kw">если</span> <span class="fn">существует</span>(<span class="str">"config.json"</span>) {
     конфиг = <span class="fn">json_читать</span>(<span class="str">"config.json"</span>)
@@ -2073,7 +2004,6 @@ d.<span class="fn">получить</span>(<span class="str">"нет"</span>, <s
 <span class="str">"abc"</span>.<span class="fn">заменить</span>(<span class="str">"b"</span>, <span class="str">"X"</span>)    <span class="cmt">// "aXc"</span>
 <span class="str">"abcdef"</span>.<span class="fn">первые</span>(<span class="num">3</span>)           <span class="cmt">// "abc"</span>
 <span class="str">"abc"</span>.<span class="fn">повторить</span>(<span class="num">3</span>)           <span class="cmt">// "abcabcabc"</span>
-<span class="str">"{имя}"</span>                    <span class="cmt">// интерполяция</span>
 <span class="str">"abc"</span>.<span class="fn">палиндром</span>()           <span class="cmt">// ложь</span></code></pre>
 
 <h2>Исключения</h2>
@@ -2149,7 +2079,7 @@ app.маршрут("/faq", "GET", функция(з) {
 <p>Декоратор <code>@тест("имя")</code> + ассерты <code>ожидать_равно</code>, <code>ожидать_ошибку</code> и др. Запуск: <code>SkyForge test tests.skf</code>. Подробно — <a href="/тесты">тут</a>.</p>
 
 <h2>Как деплоить?</h2>
-<p>Любая платформа, где работает Python. На Render — Build Command <code>pip install skyforge-lang</code>, Start Command <code>SkyForge GAZUY app.skf</code>. Демо документации живёт на <a href="https://skyforge-docs.onrender.com" target="_blank">skyforge-docs.onrender.com</a>.</p>
+<p>Любая платформа, где работает Python. На Render — Build Command <code>pip install skyforge-lang</code>, Start Command <code>SkyForge GAZUY app.skf</code>.</p>
 
 <h2>Можно ли использовать GUI?</h2>
 <p>Да, через <code>подключить_питон("tkinter")</code> или <code>customtkinter</code>. Примеры — <a href="/gui">тут</a>.</p>
@@ -2165,15 +2095,11 @@ app.маршрут("/faq", "GET", функция(з) {
 <ul>
   <li>⭐ Поставить звезду на <a href="{{ репо }}" target="_blank">GitHub</a>.</li>
   <li>📝 Сообщить о баге или предложить идею в issue.</li>
-  <li>📦 Опубликовать библиотеку на SkyForge — реестр в разработке.</li>
   <li>📣 Рассказать коллегам.</li>
 </ul>
 
 <h2>Есть планы на будущее?</h2>
 <p>Да — <a href="/дорожная-карта">дорожная карта</a>. Ближайшие шаги: LSP-сервер, расширение VS Code, Jupyter kernel, генератор статических сайтов, пакетный менеджер.</p>
-
-<h2>Можно писать продакшен?</h2>
-<p>Технически — да, лицензия MIT, никаких ограничений. По зрелости — язык молодой, и это <strong>не «убийца Python»</strong>, а инструмент под русскоязычных разработчиков и быстрые прототипы. Для больших проектов может не хватить экосистемы.</p>
 """
     вернуть страница("FAQ", "/faq", контент)
 })
@@ -2186,7 +2112,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
 <h1>Дорожная карта</h1>
 <p class="subtitle">Что уже сделано и что в планах.</p>
 
-<h2>Готово (v1.0.4)</h2>
+<h2>Готово (v1.0.5)</h2>
 <div class="card">
 <ul style="margin-bottom:0">
   <li>✅ Лексер, парсер, интерпретатор на Python</li>
@@ -2207,6 +2133,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ GUI-лаунчер (<code>SkyForge gui</code>)</li>
   <li>✅ Публикация на PyPI (<code>skyforge-lang</code>)</li>
   <li>✅ Сайт документации на самом SkyForge</li>
+  <li>✅ Плейграунд на Pyodide — запуск кода в браузере</li>
 </ul>
 </div>
 
@@ -2258,7 +2185,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   </div>
   <div class="card">
     <h3>🌍 Playground онлайн</h3>
-    <p>Редактор SkyForge в браузере через WASM. Без установки.</p>
+    <p>Редактор SkyForge в браузере через WASM. Без установки. <strong>Уже есть!</strong></p>
   </div>
 </div>
 
@@ -2313,15 +2240,15 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
     пусть urls = []
     для группа в NAV {
         для пункт в группа[1] {
-            urls.добавить("  &lt;url&gt;&lt;loc&gt;https://skyforge-docs.onrender.com" + пункт[0] + "&lt;/loc&gt;&lt;/url&gt;")
+            urls.добавить("  <url><loc>https://skyforge-docs.onrender.com" + пункт[0] + "</loc></url>")
         }
     }
-    пусть xml = "&lt;?xml version='1.0' encoding='UTF-8'?&gt;\n&lt;urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'&gt;\n" + urls.соединить("\n") + "\n&lt;/urlset&gt;"
+    пусть xml = "<?xml version='1.0' encoding='UTF-8'?>\n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n" + urls.соединить("\n") + "\n</urlset>"
     вернуть app.xml_ответ(xml, 200)
 })
 
 app.маршрут("/favicon.ico", "GET", функция(з) {
-    пусть svg = '&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" rx="14" fill="#8b6cff"/&gt;&lt;text x="32" y="46" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="#fff"&gt;S&lt;/text&gt;&lt;/svg&gt;'
+    пусть svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#8b6cff"/><text x="32" y="46" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="#fff">S</text></svg>'
     вернуть app.сырой_ответ(200, "image/svg+xml", svg)
 })
 
@@ -2363,7 +2290,7 @@ app.маршрут("/<path>", "GET", функция(з) {
 // ================================================================
 // Запуск
 // ================================================================
-лог("📚 SkyForge Documentation v2")
+лог("📚 SkyForge Documentation v2.1")
 лог("   Порт:", порт_сервера())
 лог("   Хост:", хост_сервера())
 лог("   Открой: http://localhost:" + порт_сервера() + "/")
