@@ -1,12 +1,12 @@
 // ================================================================
-// SkyForge Documentation v2.2 — сайт документации на самом SkyForge
+// SkyForge Documentation v2.3 — сайт документации на самом SkyForge
 // ================================================================
 
 пусть app = приложение()
 app.имя("SkyForge — документация")
 app.отладка(истина)
 
-пусть ВЕРСИЯ = "1.0.5"
+пусть ВЕРСИЯ = "1.0.6"
 пусть РЕПО = "https://github.com/skytech-alt/SkyForge-Docs"
 пусть ПИПИ = "https://pypi.org/project/skyforge-lang/"
 
@@ -322,6 +322,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         ["/питон", "Python-мост"],
         ["/веб", "Веб-фреймворк"],
         ["/orm", "ORM"],
+        ["/autorest", "🚀 AutoREST"],
         ["/gui", "Десктоп / GUI"],
         ["/тесты", "Тестирование"],
     ]],
@@ -337,7 +338,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 // Шаблон страницы
 // ================================================================
 функция страница(заголовок, путь, содержимое) {
-    // подстановка переменных внутри содержимого
     содержимое = содержимое.заменить("{{ репо }}", РЕПО)
     содержимое = содержимое.заменить("{{ пипи }}", ПИПИ)
     содержимое = содержимое.заменить("{{ версия }}", ВЕРСИЯ)
@@ -385,7 +385,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 <div class="footer">
   <div>
     SkyForge v{{ версия }} · MIT ·
-    <span style="color:#3ddc84">✅ 69/69 тестов</span>
+    <span style="color:#3ddc84">✅ 79/79 тестов</span>
   </div>
   <div>
     Сделано на <strong style="color:#9b83ff">SkyForge</strong> ·
@@ -416,15 +416,15 @@ app.маршрут("/", "GET", функция(з) {
     пусть контент = """
 <div class="hero">
   <h1>SkyForge</h1>
-  <p>Русскоязычный язык программирования. ООП, async, генераторы, pattern matching, веб-фреймворк, ORM и тесты — в одном языке, без импортов десятка библиотек.</p>
+  <p>Русскоязычный язык программирования. ООП, async, генераторы, pattern matching, веб-фреймворк, ORM, AutoREST и тесты — в одном языке, без импортов десятка библиотек.</p>
   <div class="cta">
     <a href="/playground" class="primary">▶ Попробовать в браузере</a>
     <a href="/быстрый-старт" class="ghost">→ Быстрый старт</a>
     <a href="{{ репо }}" class="ghost" target="_blank">★ GitHub</a>
   </div>
   <div class="badges">
-    <span class="badge-ok">✅ 69/69 тестов</span>
-    <span class="badge-ok">⚡ 0.69 с</span>
+    <span class="badge-ok">✅ 79/79 тестов</span>
+    <span class="badge-ok">⚡ 0.70 с</span>
     <span class="badge-ok">📦 v{{ версия }}</span>
     <span class="badge-ok">🔤 Этот сайт — на SkyForge</span>
   </div>
@@ -433,13 +433,13 @@ app.маршрут("/", "GET", функция(з) {
 <h2>Проверено — работает</h2>
 <div class="grid">
   <div class="card">
-    <h3>✅ 69/69 тестов</h3>
-    <p>Каждая фича языка покрыта тестом: синтаксис, ООП, async, генераторы, pattern matching, типы, исключения, декораторы, ORM, веб, крипто, Python-мост.</p>
-    <p style="color:#8b93a7;font-size:12px;margin-top:8px">Прогон: <code>SkyForge test examples\всё.skf</code> → 0.69 с</p>
+    <h3>✅ 79/79 тестов</h3>
+    <p>Каждая фича языка покрыта тестом: синтаксис, ООП, async, генераторы, pattern matching, типы, исключения, декораторы, ORM, веб, AutoREST, крипто, Python-мост.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px">Прогон: <code>SkyForge test examples\всё.skf</code> → 0.70 с</p>
   </div>
   <div class="card">
     <h3>🖥 Этот сайт</h3>
-    <p>Написан на самом SkyForge: 24 страницы, свой веб-фреймворк, middleware, sitemap, самопинг, llms.txt для AI.</p>
+    <p>Написан на самом SkyForge: 25 страниц, свой веб-фреймворк, middleware, sitemap, самопинг, llms.txt для AI.</p>
     <p style="color:#8b93a7;font-size:12px;margin-top:8px">Один файл <code>docs.skf</code> — и весь сайт</p>
   </div>
   <div class="card">
@@ -451,6 +451,11 @@ app.маршрут("/", "GET", функция(з) {
     <h3>💻 SkyForge.exe</h3>
     <p>Приложение для Windows без Python. Скачал, кликнул, пишешь код.</p>
     <p style="color:#8b93a7;font-size:12px;margin-top:8px"><a href="{{ репо }}/releases/latest" target="_blank">Скачать .exe →</a></p>
+  </div>
+  <div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+    <h3>🚀 AutoREST</h3>
+    <p>Одна строка <code>app.из_схемы(...)</code> — и готово CRUD-API, админка и OpenAPI. Django отдыхает.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px"><a href="/autorest">Что это →</a></p>
   </div>
 </div>
 
@@ -475,6 +480,10 @@ app.маршрут("/", "GET", функция(з) {
     <p>Модели, CRUD, запросы, сортировка, агрегация. SQLite из коробки, без единой строки SQL.</p>
   </div>
   <div class="card">
+    <h3>🚀 AutoREST</h3>
+    <p><code>app.из_схемы("users (id PK, name TEXT)")</code> → CRUD-API + админка + OpenAPI одной строкой.</p>
+  </div>
+  <div class="card">
     <h3>🧪 Тесты</h3>
     <p>Декоратор <code>@тест("имя")</code>, ассерты, красивый отчёт, команда <code>SkyForge test</code>.</p>
   </div>
@@ -495,10 +504,22 @@ app.маршрут("/", "GET", функция(з) {
 <pre><code>$ SkyForge run hello.skf
 <span class="str">Привет, Мир!</span></code></pre>
 
+<h2>Быстрый API одной строкой</h2>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
+    products (id PK, title TEXT, price REAL)
+"""</span>)
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
+
+<p>Готово: <code>GET/POST/PUT/DELETE /users</code>, то же для <code>/products</code>, плюс админка на <code>/admin</code>. Подробнее — <a href="/autorest">/autorest</a>.</p>
+
 <h2>Почему SkyForge</h2>
 <ul>
   <li><strong>Читается как инструкция</strong> — не нужно держать в голове английские ключевые слова.</li>
-  <li><strong>Батарейки включены</strong> — web, ORM, tests, stdlib уже в языке.</li>
+  <li><strong>Батарейки включены</strong> — web, ORM, AutoREST, tests, stdlib уже в языке.</li>
   <li><strong>Python под капотом</strong> — весь PyPI доступен через мост, .skf дружит с любыми библиотеками.</li>
   <li><strong>Готов к деплою</strong> — на Render, VPS, локально в одну команду.</li>
   <li><strong>Свой REPL</strong> — <code>SkyForge repl</code> для экспериментов.</li>
@@ -509,12 +530,12 @@ app.маршрут("/", "GET", функция(з) {
 <div class="card">
   <h3>v{{ версия }}</h3>
   <ul style="margin-bottom:0">
+    <li><strong>AutoREST</strong> — CRUD-API + админка + OpenAPI из текстовой схемы БД одной строкой</li>
+    <li>Парсер SQL-подобной схемы с типами, модификаторами, комментариями</li>
+    <li>79/79 тестов проходят за 0.70 с</li>
     <li>Стабильный web-фреймворк с middleware и сессиями</li>
     <li>Async/await с реальным параллелизмом</li>
     <li>Pattern matching для списков и словарей</li>
-    <li>Опциональная типизация в рантайме</li>
-    <li>Декораторы: <code>@кешировать</code>, <code>@повторить(n)</code>, <code>@таймер_декоратор</code></li>
-    <li>Python-мост возвращает корневой модуль — работает <code>os.path.join(...)</code></li>
   </ul>
 </div>
 
@@ -533,6 +554,10 @@ app.маршрут("/", "GET", функция(з) {
     <h3>▶ Плейграунд</h3>
     <p>Напиши и запусти код прямо в браузере.</p>
   </a>
+  <a href="/autorest" class="card" style="display:block">
+    <h3>🚀 AutoREST</h3>
+    <p>CRUD-API и админка одной строкой.</p>
+  </a>
   <a href="/быстрый-старт" class="card" style="display:block">
     <h3>⚡ Быстрый старт</h3>
     <p>От установки до первого API за 5 минут.</p>
@@ -541,13 +566,177 @@ app.маршрут("/", "GET", функция(з) {
     <h3>🍳 Рецепты</h3>
     <p>Готовые сниппеты для типовых задач.</p>
   </a>
-  <a href="/шпаргалка" class="card" style="display:block">
-    <h3>📋 Шпаргалка</h3>
-    <p>Весь синтаксис на одной странице.</p>
-  </a>
 </div>
 """
     вернуть страница("Введение", "/", контент)
+})
+
+// ================================================================
+// AUTOREST
+// ================================================================
+app.маршрут("/autorest", "GET", функция(з) {
+    пусть контент = """
+<h1>AutoREST <span class="badge">Killer feature</span></h1>
+<p class="subtitle">Одна строка — и готово CRUD-API, админка и OpenAPI. Без boilerplate.</p>
+
+<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+<p style="font-size:17px;margin:0"><strong>Опиши схему БД — получи работающий REST API за секунды.</strong></p>
+<p style="color:#8b93a7;margin-top:8px">Django: 5 файлов, 200 строк. Flask + SQLAlchemy: 10 файлов, 300 строк.<br>
+SkyForge: <strong style="color:#3ddc84">1 файл, 15 строк</strong>.</p>
+</div>
+
+<h2>Быстрый старт</h2>
+<p>Создай файл <code>app.skf</code>:</p>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE, age INT)
+    products (id PK, title TEXT NOT_NULL, price REAL)
+    orders (id PK, user_id INT, total REAL, status TEXT)
+"""</span>)
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
+
+<p>Запускаешь:</p>
+<pre><code>SkyForge web app.skf</code></pre>
+
+<p>Открываешь:</p>
+<ul>
+  <li><a href="http://localhost:8000/admin">http://localhost:8000/admin</a> — админка со списком таблиц</li>
+  <li><a href="http://localhost:8000/users">http://localhost:8000/users</a> — JSON-массив пользователей</li>
+  <li><a href="http://localhost:8000/products">http://localhost:8000/products</a> — товары</li>
+  <li><a href="http://localhost:8000/docs">http://localhost:8000/docs</a> — автодокументация</li>
+</ul>
+
+<h2>Что создаётся автоматически</h2>
+<p>Для каждой таблицы из схемы AutoREST генерирует <strong>5 CRUD-маршрутов</strong>:</p>
+
+<pre><code>GET    /users            <span class="cmt">// список всех</span>
+GET    /users/&lt;id&gt;       <span class="cmt">// одна запись</span>
+POST   /users            <span class="cmt">// создать (JSON в теле)</span>
+PUT    /users/&lt;id&gt;       <span class="cmt">// обновить (JSON в теле)</span>
+DELETE /users/&lt;id&gt;       <span class="cmt">// удалить</span></code></pre>
+
+<p>Плюс общие:</p>
+<ul>
+  <li><code>GET /admin</code> — админка со всеми таблицами и счётчиками</li>
+  <li><code>GET /admin/&lt;table&gt;</code> — данные выбранной таблицы</li>
+  <li><code>GET /docs</code> — автодокументация</li>
+</ul>
+
+<h2>Синтаксис схемы</h2>
+<p>Формат строки:</p>
+<pre><code>имя_таблицы (поле1 ТИП [МОДИФИКАТОРЫ], поле2 ТИП, ...)</code></pre>
+
+<p><strong>Типы:</strong></p>
+<div class="card">
+<p><span class="tag">INT</span> целое</p>
+<p><span class="tag">REAL</span> дробное</p>
+<p><span class="tag">TEXT</span> строка</p>
+<p><span class="tag">BOOL</span> булево</p>
+<p><span class="tag">DATETIME</span> строка (дата-время)</p>
+<p><span class="tag">JSON</span> JSON-объект</p>
+</div>
+
+<p><strong>Модификаторы:</strong></p>
+<div class="card">
+<p><span class="tag">PK</span> первичный ключ (тип целое по умолчанию, автоинкремент)</p>
+<p><span class="tag">UNIQUE</span> уникальное значение</p>
+<p><span class="tag">NOT_NULL</span> не пустое</p>
+<p><span class="tag">DEFAULT val</span> значение по умолчанию</p>
+</div>
+
+<p>Порядок не важен: <code>id PK</code> == <code>id INT PK</code>. Комментарии <code>//</code> и <code>#</code> игнорируются.</p>
+
+<h2>Пример: интернет-магазин</h2>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE, city TEXT)
+    products (id PK, title TEXT NOT_NULL, price REAL, stock INT DEFAULT 0)
+    orders (id PK, user_id INT, total REAL, status TEXT DEFAULT "new", created_at TEXT)
+    reviews (id PK, product_id INT, user_id INT, rating INT, comment TEXT)
+"""</span>)
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
+
+<p>Получаешь <strong>20 CRUD-маршрутов</strong> и админку с 4 таблицами. Всё без единой строки SQL.</p>
+
+<h2>Работа с API</h2>
+<p><strong>Создать запись:</strong></p>
+<pre><code>POST /users
+Content-Type: application/json
+
+{"name": "Алиса", "email": "alice@mail.ru", "city": "Москва"}</code></pre>
+
+<p><strong>Ответ:</strong></p>
+<pre><code>{"id": 1, "name": "Алиса", "email": "alice@mail.ru", "city": "Москва"}</code></pre>
+
+<p><strong>Обновить:</strong></p>
+<pre><code>PUT /users/1
+Content-Type: application/json
+
+{"city": "Питер"}</code></pre>
+
+<p><strong>Удалить:</strong></p>
+<pre><code>DELETE /users/1</code></pre>
+
+<p><strong>Список:</strong></p>
+<pre><code>GET /users
+→ [{"id": 1, "name": "Алиса", ...}, ...]</code></pre>
+
+<h2>Через curl (PowerShell)</h2>
+<pre><code><span class="cmt"># Список</span>
+curl http://localhost:8000/users
+
+<span class="cmt"># Создать</span>
+$body = '{"name":"Катя","email":"k@mail.ru"}'
+curl -X POST http://localhost:8000/users -ContentType 'application/json' -Body $body
+
+<span class="cmt"># Получить одну</span>
+curl http://localhost:8000/users/1
+
+<span class="cmt"># Обновить</span>
+curl -X PUT http://localhost:8000/users/1 -ContentType 'application/json' -Body '{"city":"Сочи"}'
+
+<span class="cmt"># Удалить</span>
+curl -X DELETE http://localhost:8000/users/1</code></pre>
+
+<h2>Админка</h2>
+<p>Открой <code>/admin</code> — увидишь:</p>
+<ul>
+  <li>Список всех таблиц из схемы в виде карточек</li>
+  <li>Количество записей в каждой</li>
+  <li>Клик по карточке — таблица с данными</li>
+  <li>Тёмная тема, встроенная в SkyForge Web</li>
+</ul>
+
+<p>Админка — read-only. Для изменения данных используй API.</p>
+
+<h2>Что НЕ входит</h2>
+<ul>
+  <li>Формы создания/редактирования в админке (только просмотр)</li>
+  <li>Аутентификация (нужна своя через middleware)</li>
+  <li>Связи между таблицами (только ID-ссылки вручную)</li>
+  <li>Миграции схемы (при изменении <code>из_схемы</code> нужно пересоздавать БД)</li>
+</ul>
+
+<h2>Технические детали</h2>
+<p>Под капотом AutoREST использует:</p>
+<ul>
+  <li>ORM SkyForge (<code>создать_модель</code>) для доступа к данным</li>
+  <li>Веб-фреймворк SkyForge для маршрутов</li>
+  <li>SQLite для хранения</li>
+  <li>Парсер схемы на чистом Python</li>
+</ul>
+
+<p>Исходники: <code>skyforge/autorest.py</code> (~350 строк Python).</p>
+
+<div class="card" style="border-color:#3ddc84;background:linear-gradient(135deg,rgba(61,220,132,0.05),transparent)">
+<p style="margin:0">Попробуй локально: <code>SkyForge web examples\\autorest_demo.skf</code></p>
+</div>
+"""
+    вернуть страница("AutoREST", "/autorest", контент)
 })
 
 // ================================================================
@@ -583,7 +772,7 @@ app.маршрут("/установка", "GET", функция(з) {
 
 <h2>Проверка</h2>
 <pre><code>SkyForge version
-<span class="cmt"># SkyForge 1.0.5</span>
+<span class="cmt"># SkyForge 1.0.6</span>
 <span class="cmt"># Python: 3.12.0</span>
 <span class="cmt"># Платформа: win32</span></code></pre>
 
@@ -695,26 +884,23 @@ app.маршрут("/быстрый-старт", "GET", функция(з) {
 <span class="kw">пусть</span> p = <span class="type">Точка</span>(<span class="num">3</span>, <span class="num">4</span>)
 <span class="fn">лог</span>(p.<span class="fn">длина</span>())   <span class="cmt">// 5.0</span></code></pre>
 
-<h2>7. Первый API</h2>
+<h2>7. Первый API — 15 строк</h2>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
-<span class="kw">пусть</span> бд = <span class="fn">бд_открыть</span>(<span class="str">"todos.db"</span>)
 
-<span class="kw">пусть</span> Задачи = <span class="fn">создать_модель</span>(
-    имя = <span class="str">"Задача"</span>, таблица = <span class="str">"todos"</span>, бд = бд,
-    поля = [
-        {<span class="str">"имя"</span>: <span class="str">"id"</span>, <span class="str">"тип"</span>: <span class="str">"целое"</span>, <span class="str">"первичный"</span>: истина, <span class="str">"авто"</span>: истина},
-        {<span class="str">"имя"</span>: <span class="str">"текст"</span>, <span class="str">"тип"</span>: <span class="str">"строка"</span>},
-        {<span class="str">"имя"</span>: <span class="str">"готово"</span>, <span class="str">"тип"</span>: <span class="str">"булево"</span>, <span class="str">"по_умолчанию"</span>: ложь}
-    ]
-)
-Задачи.<span class="fn">создать_таблицу</span>()
-
-app.<span class="fn">маршрут</span>(<span class="str">"/todos"</span>, <span class="str">"GET"</span>, <span class="kw">функция</span>(з) { <span class="kw">вернуть</span> Задачи.<span class="fn">все</span>() })
-app.<span class="fn">маршрут</span>(<span class="str">"/todos"</span>, <span class="str">"POST"</span>, <span class="kw">функция</span>(з) {
-    <span class="kw">вернуть</span> Задачи.<span class="fn">создать</span>(текст = з[<span class="str">"json"</span>][<span class="str">"текст"</span>])
-})
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    todos (id PK, text TEXT NOT_NULL, done BOOL DEFAULT 0)
+"""</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
+
+<p>Открываешь:</p>
+<ul>
+  <li><code>http://localhost:8000/todos</code> — JSON-массив задач</li>
+  <li><code>http://localhost:8000/admin</code> — админка</li>
+  <li><code>http://localhost:8000/docs</code> — документация</li>
+</ul>
+
+<p>CRUD-маршруты готовы, ничего больше писать не надо. Подробнее — <a href="/autorest">AutoREST</a>.</p>
 
 <h2>8. Тесты</h2>
 <pre><code><span class="kw">@тест</span>(<span class="str">"сложение работает"</span>)
@@ -727,6 +913,7 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
 <h2>Что дальше</h2>
 <ul>
   <li><a href="/playground">Плейграунд</a> — попробуй без установки</li>
+  <li><a href="/autorest">AutoREST</a> — CRUD-API из схемы БД</li>
   <li><a href="/синтаксис">Синтаксис</a> — весь язык в деталях</li>
   <li><a href="/веб">Веб-фреймворк</a> — маршруты, шаблоны, сессии</li>
   <li><a href="/рецепты">Рецепты</a> — готовые сниппеты</li>
@@ -1956,7 +2143,19 @@ asyncio.run(dp.start_polling(bot))</code></pre>
 
 <span class="fn">лог</span>(<span class="fn">фибо</span>(<span class="num">100</span>))   <span class="cmt">// мгновенно благодаря кешу</span></code></pre>
 
-<h2>9. Чтение и запись JSON-конфига</h2>
+<h2>9. REST API за одну строку</h2>
+<pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
+
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
+    posts (id PK, author_id INT, title TEXT, body TEXT)
+"""</span>)
+
+app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
+
+<p>Подробнее — <a href="/autorest">AutoREST</a>.</p>
+
+<h2>10. Чтение и запись JSON-конфига</h2>
 <pre><code><span class="kw">пусть</span> конфиг = {}
 <span class="kw">если</span> <span class="fn">существует</span>(<span class="str">"config.json"</span>) {
     конфиг = <span class="fn">json_читать</span>(<span class="str">"config.json"</span>)
@@ -2098,7 +2297,12 @@ d.<span class="fn">получить</span>(<span class="str">"нет"</span>, <s
 <span class="kw">@кешировать</span>
 <span class="kw">@повторить</span>(<span class="num">3</span>)
 <span class="kw">@таймер_декоратор</span>
-<span class="kw">@логировать</span></code></pre>
+<span class="kw">@логировать</span>
+
+<span class="cmt">// AutoREST</span>
+app.<span class="fn">из_схемы</span>(<span class="str">"""
+    users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
+"""</span>)</code></pre>
 
 <h2>Команды CLI</h2>
 <pre><code>SkyForge repl                    <span class="cmt"># REPL</span>
@@ -2125,10 +2329,13 @@ app.маршрут("/faq", "GET", функция(з) {
 <p>Нет. SkyForge — <strong>самостоятельный язык</strong> со своим лексером, парсером и интерпретатором. Интерпретатор <em>написан</em> на Python, но код <code>.skf</code> к Python не имеет отношения. Через <code>подключить_питон</code> можно вызывать Python-модули и получать к ним доступ.</p>
 
 <h2>Зачем ещё один язык?</h2>
-<p>Для русскоязычных разработчиков, которым удобнее думать на родном языке. Плюс батарейки: web + ORM + tests + stdlib в одном языке, без импортов десятка библиотек. Скрипт, API или блог пишется в 2-3 раза компактнее, чем на Python с Flask + SQLAlchemy.</p>
+<p>Для русскоязычных разработчиков, которым удобнее думать на родном языке. Плюс батарейки: web + ORM + AutoREST + tests + stdlib в одном языке, без импортов десятка библиотек. Скрипт, API или блог пишется в 2-3 раза компактнее, чем на Python с Flask + SQLAlchemy.</p>
+
+<h2>Что такое AutoREST?</h2>
+<p>Killer-фича SkyForge. Одна строка <code>app.из_схемы("...")</code> генерирует CRUD-API, админку и OpenAPI для всех таблиц БД. Django делает то же самое за 200 строк в 5 файлах. SkyForge — за 1 строку в 1 файле. Подробнее — <a href="/autorest">/autorest</a>.</p>
 
 <h2>Это продакшен-готово?</h2>
-<p>Для скриптов, CLI, внутренних инструментов, API, блогов, MVP — <strong>да</strong>. 69/69 тестов проходят, есть веб-сервер с middleware и сессиями, ORM, тесты, деплой на Render. Для высоконагруженных проектов или там, где нужен LSP/отладчик/VS Code — пока рано.</p>
+<p>Для скриптов, CLI, внутренних инструментов, API, блогов, MVP — <strong>да</strong>. 79/79 тестов проходят за 0.70 с, есть веб-сервер с middleware и сессиями, ORM, AutoREST, тесты, деплой на Render. Для высоконагруженных проектов или там, где нужен LSP/отладчик/VS Code — пока рано.</p>
 
 <h2>Медленный?</h2>
 <p>Да, интерпретатор на Python медленнее самого Python в 30-100 раз. Для веба это неважно — узкое место сеть. Для CPU-задач — используй <code>numpy</code>/<code>pandas</code> через мост.</p>
@@ -2173,7 +2380,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
 <h1>Дорожная карта</h1>
 <p class="subtitle">Что уже сделано и что в планах.</p>
 
-<h2>Готово (v1.0.5)</h2>
+<h2>Готово (v1.0.6)</h2>
 <div class="card">
 <ul style="margin-bottom:0">
   <li>✅ Лексер, парсер, интерпретатор на Python</li>
@@ -2188,6 +2395,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ Python-мост (<code>подключить_питон</code>)</li>
   <li>✅ Веб-фреймворк: маршруты, шаблоны, middleware, сессии, <code>/docs</code></li>
   <li>✅ ORM поверх SQLite</li>
+  <li>✅ <strong>AutoREST</strong> — CRUD-API + админка + OpenAPI из текстовой схемы БД одной строкой</li>
   <li>✅ Тестовый фреймворк + <code>SkyForge test</code></li>
   <li>✅ Stdlib: транслит, склонения, русские даты, PBKDF2, JWT, regex, хэши</li>
   <li>✅ REPL (<code>SkyForge repl</code>)</li>
@@ -2195,7 +2403,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ Публикация на PyPI (<code>skyforge-lang</code>)</li>
   <li>✅ Сайт документации на самом SkyForge</li>
   <li>✅ Плейграунд на Pyodide — запуск кода в браузере</li>
-  <li>✅ 69/69 тестов проходят за 0.69 с</li>
+  <li>✅ 79/79 тестов проходят за 0.70 с</li>
 </ul>
 </div>
 
@@ -2203,7 +2411,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
 <div class="card">
 <p>Этот сайт — не отдельный проект на Python или Node.js. Он <strong>написан на самом SkyForge</strong> в одном файле <code>docs.skf</code>.</p>
 <ul style="margin-top:12px">
-  <li>Веб-фреймворк SkyForge: 24 маршрута, шаблоны, middleware</li>
+  <li>Веб-фреймворк SkyForge: 25 маршрутов, шаблоны, middleware</li>
   <li>Автодокументация на <a href="/docs">/docs</a></li>
   <li>Health-check на <code>/health</code> и <code>/heal</code></li>
   <li>Sitemap на <code>/sitemap.xml</code></li>
@@ -2245,8 +2453,8 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
     <p><code>SkyForge format</code> — автоформат по стандарту PEP-подобного стиля для .skf.</p>
   </div>
   <div class="card">
-    <h3>🗄 ORM для PostgreSQL</h3>
-    <p>Помимо SQLite — поддержка Postgres через <code>psycopg2</code> без изменения API.</p>
+    <h3>🗄 AutoREST: редактирование в админке</h3>
+    <p>Формы создания/удаления записей прямо в админке, без API.</p>
   </div>
   <div class="card">
     <h3>🌐 WebSocket</h3>
@@ -2336,6 +2544,7 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
         ["/питон", "0.8", "monthly", "Python-мост — доступ ко всему PyPI"],
         ["/веб", "0.9", "monthly", "Веб-фреймворк SkyForge"],
         ["/orm", "0.9", "monthly", "ORM для SQLite"],
+        ["/autorest", "0.9", "monthly", "AutoREST — CRUD-API и админка из схемы БД"],
         ["/gui", "0.7", "monthly", "Десктопные приложения на SkyForge"],
         ["/тесты", "0.8", "monthly", "Тестирование в SkyForge"],
         ["/рецепты", "0.8", "weekly", "Готовые рецепты и сниппеты"],
@@ -2395,12 +2604,10 @@ app.маршрут("/llms.txt", "GET", функция(з) {
 app.маршрут("/<файл>", "GET", функция(з) {
     пусть имя = з["параметры_маршрута"]["файл"]
 
-    // защита от выхода за пределы
     если имя.содержит_подстроку("..") {
         вернуть app.ошибка("Недопустимый путь", 400)
     }
 
-    // ищем файл в нескольких местах
     пусть путь = ничего
     для место в ["docs-app/", "", "docs-app/static/"] {
         пусть пробный = место + имя
@@ -2411,7 +2618,6 @@ app.маршрут("/<файл>", "GET", функция(з) {
     }
 
     если путь == ничего {
-        // 404
         пусть контент404 = """
 <h1>404 — не найдено</h1>
 <p>Такой страницы нет.</p>
@@ -2450,7 +2656,6 @@ app.маршрут("/<файл>", "GET", функция(з) {
         вернуть app.сырой_ответ(200, "image/png", читать_файл(путь, "utf-8"))
     }
 
-    // неизвестный — отдать как text/plain
     вернуть app.текст_ответ(читать_файл(путь, "utf-8"))
 })
 
@@ -2480,7 +2685,7 @@ app.маршрут("/<файл>", "GET", функция(з) {
 // ================================================================
 // Запуск
 // ================================================================
-лог("📚 SkyForge Documentation v2.2")
+лог("📚 SkyForge Documentation v2.3")
 лог("   Порт:", порт_сервера())
 лог("   Хост:", хост_сервера())
 лог("   Открой: http://localhost:" + порт_сервера() + "/")
