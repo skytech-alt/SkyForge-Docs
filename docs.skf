@@ -322,10 +322,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         ["/питон", "Python-мост"],
         ["/веб", "Веб-фреймворк"],
         ["/orm", "ORM"],
-        ["/autorest", "🚀 AutoREST"],
+        ["/autorest", "AutoREST"],
         ["/gui", "Десктоп / GUI"],
-        ["/vscode", "🛠 VS Code / LSP"],
-        ["/транспилятор", "⚡ Транспилятор"],
+        ["/vscode", "VS Code / LSP"],
+        ["/транспилятор", "Транспилятор"],
         ["/тесты", "Тестирование"],
     ]],
     ["Практика", [
@@ -778,7 +778,7 @@ app.маршрут("/установка", "GET", функция(з) {
 
 <h2>Проверка</h2>
 <pre><code>SkyForge version
-<span class="cmt"># SkyForge 1.0.6</span>
+<span class="cmt"># SkyForge 1.0.7</span>
 <span class="cmt"># Python: 3.12.0</span>
 <span class="cmt"># Платформа: win32</span></code></pre>
 
@@ -2649,7 +2649,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
 <h1>Дорожная карта</h1>
 <p class="subtitle">Что уже сделано и что в планах.</p>
 
-<h2>Готово (v1.0.6)</h2>
+<h2>Готово (v1.0.7)</h2>
 <div class="card">
 <ul style="margin-bottom:0">
   <li>✅ Лексер, парсер, интерпретатор на Python</li>
