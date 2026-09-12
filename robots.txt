@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /health
+Disallow: /heal
+Disallow: /github
+
 Sitemap: https://skyforge-docs.onrender.com/sitemap.xml
