@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skyforge-docs.onrender.com/sitemap.xml
