@@ -357,6 +357,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 // Шаблон страницы
 // ================================================================
 функция страница(заголовок, путь, содержимое) {
+    // подстановка переменных внутри содержимого
+    содержимое = содержимое.заменить("{{ репо }}", РЕПО)
+    содержимое = содержимое.заменить("{{ пипи }}", ПИПИ)
+    содержимое = содержимое.заменить("{{ версия }}", ВЕРСИЯ)
     пусть меню = ""
     для группа в NAV {
         пусть items_html = ""
@@ -2312,14 +2316,13 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
             urls.добавить("  &lt;url&gt;&lt;loc&gt;https://skyforge-docs.onrender.com" + пункт[0] + "&lt;/loc&gt;&lt;/url&gt;")
         }
     }
-    вернуть (200, "application/xml; charset=utf-8",
-        "&lt;?xml version='1.0' encoding='UTF-8'?&gt;\n&lt;urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'&gt;\n"
-        + urls.соединить("\n") + "\n&lt;/urlset&gt;")
+    пусть xml = "&lt;?xml version='1.0' encoding='UTF-8'?&gt;\n&lt;urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'&gt;\n" + urls.соединить("\n") + "\n&lt;/urlset&gt;"
+    вернуть app.xml_ответ(xml, 200)
 })
 
 app.маршрут("/favicon.ico", "GET", функция(з) {
     пусть svg = '&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"&gt;&lt;rect width="64" height="64" rx="14" fill="#8b6cff"/&gt;&lt;text x="32" y="46" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="#fff"&gt;S&lt;/text&gt;&lt;/svg&gt;'
-    вернуть (200, "image/svg+xml", svg)
+    вернуть app.сырой_ответ(200, "image/svg+xml", svg)
 })
 
 // ================================================================
