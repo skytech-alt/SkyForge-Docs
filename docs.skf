@@ -2237,14 +2237,53 @@ app.маршрут("/heal", "GET", функция(з) {
 })
 
 app.маршрут("/sitemap.xml", "GET", функция(з) {
-    пусть urls = []
-    для группа в NAV {
-        для пункт в группа[1] {
-            urls.добавить("  <url><loc>https://skyforge-docs.onrender.com" + пункт[0] + "</loc></url>")
-        }
+    пусть БАЗА = "https://skyforge-docs.onrender.com"
+    пусть СЕГОДНЯ = дата_сейчас("%Y-%m-%d")
+
+    пусть страницы = [
+        ["/", "1.0", "daily", "Введение в SkyForge — русскоязычный язык программирования"],
+        ["/playground", "0.9", "weekly", "Плейграунд — запустить код SkyForge в браузере"],
+        ["/установка", "0.9", "monthly", "Установка SkyForge через pip"],
+        ["/быстрый-старт", "0.9", "monthly", "Быстрый старт — от установки до первого API"],
+        ["/синтаксис", "0.8", "monthly", "Синтаксис языка SkyForge"],
+        ["/функции", "0.8", "monthly", "Функции в SkyForge"],
+        ["/классы", "0.8", "monthly", "Классы и наследование в SkyForge"],
+        ["/включения", "0.7", "monthly", "Списковые и словарные включения"],
+        ["/исключения", "0.7", "monthly", "Обработка исключений"],
+        ["/типы", "0.7", "monthly", "Опциональная типизация"],
+        ["/генераторы", "0.7", "monthly", "Генераторы через выдать"],
+        ["/async", "0.7", "monthly", "Async/await в SkyForge"],
+        ["/совпадает", "0.7", "monthly", "Pattern matching"],
+        ["/декораторы", "0.7", "monthly", "Декораторы функций"],
+        ["/модули", "0.8", "monthly", "Стандартная библиотека SkyForge"],
+        ["/питон", "0.8", "monthly", "Python-мост — доступ ко всему PyPI"],
+        ["/веб", "0.9", "monthly", "Веб-фреймворк SkyForge"],
+        ["/orm", "0.9", "monthly", "ORM для SQLite"],
+        ["/gui", "0.7", "monthly", "Десктопные приложения на SkyForge"],
+        ["/тесты", "0.8", "monthly", "Тестирование в SkyForge"],
+        ["/рецепты", "0.8", "weekly", "Готовые рецепты и сниппеты"],
+        ["/шпаргалка", "0.8", "monthly", "Шпаргалка по синтаксису"],
+        ["/faq", "0.7", "monthly", "Частые вопросы"],
+        ["/дорожная-карта", "0.6", "weekly", "Дорожная карта проекта"]
+    ]
+
+    пусть строки = []
+    для стр в страницы {
+        пусть xml = "  <url>"
+        xml = xml + "<loc>" + БАЗА + стр[0] + "</loc>"
+        xml = xml + "<lastmod>" + СЕГОДНЯ + "</lastmod>"
+        xml = xml + "<changefreq>" + стр[2] + "</changefreq>"
+        xml = xml + "<priority>" + стр[1] + "</priority>"
+        xml = xml + "</url>"
+        строки.добавить(xml)
     }
-    пусть xml = "<?xml version='1.0' encoding='UTF-8'?>\n<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n" + urls.соединить("\n") + "\n</urlset>"
-    вернуть app.xml_ответ(xml, 200)
+
+    пусть xml_итог = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    xml_итог = xml_итог + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
+    xml_итог = xml_итог + строки.соединить("\n")
+    xml_итог = xml_итог + "\n</urlset>"
+
+    вернуть app.xml_ответ(xml_итог, 200)
 })
 
 app.маршрут("/favicon.ico", "GET", функция(з) {
