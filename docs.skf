@@ -507,10 +507,10 @@ app.маршрут("/", "GET", функция(з) {
 <h2>Быстрый API одной строкой</h2>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
 
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
     products (id PK, title TEXT, price REAL)
-"""</span>)
+&quot;&quot;&quot;</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
@@ -589,11 +589,11 @@ SkyForge: <strong style="color:#3ddc84">1 файл, 15 строк</strong>.</p>
 <p>Создай файл <code>app.skf</code>:</p>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
 
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE, age INT)
     products (id PK, title TEXT NOT_NULL, price REAL)
     orders (id PK, user_id INT, total REAL, status TEXT)
-"""</span>)
+&quot;&quot;&quot;</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
@@ -651,12 +651,12 @@ DELETE /users/&lt;id&gt;       <span class="cmt">// удалить</span></code>
 <h2>Пример: интернет-магазин</h2>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
 
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE, city TEXT)
     products (id PK, title TEXT NOT_NULL, price REAL, stock INT DEFAULT 0)
     orders (id PK, user_id INT, total REAL, status TEXT DEFAULT "new", created_at TEXT)
     reviews (id PK, product_id INT, user_id INT, rating INT, comment TEXT)
-"""</span>)
+&quot;&quot;&quot;</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
@@ -887,9 +887,9 @@ app.маршрут("/быстрый-старт", "GET", функция(з) {
 <h2>7. Первый API — 15 строк</h2>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
 
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     todos (id PK, text TEXT NOT_NULL, done BOOL DEFAULT 0)
-"""</span>)
+&quot;&quot;&quot;</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
@@ -2146,10 +2146,10 @@ asyncio.run(dp.start_polling(bot))</code></pre>
 <h2>9. REST API за одну строку</h2>
 <pre><code><span class="kw">пусть</span> app = <span class="fn">приложение</span>()
 
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
     posts (id PK, author_id INT, title TEXT, body TEXT)
-"""</span>)
+&quot;&quot;&quot;</span>)
 
 app.<span class="fn">запустить</span>(<span class="num">8000</span>)</code></pre>
 
@@ -2300,9 +2300,9 @@ d.<span class="fn">получить</span>(<span class="str">"нет"</span>, <s
 <span class="kw">@логировать</span>
 
 <span class="cmt">// AutoREST</span>
-app.<span class="fn">из_схемы</span>(<span class="str">"""
+app.<span class="fn">из_схемы</span>(<span class="str">&quot;&quot;&quot;
     users (id PK, name TEXT NOT_NULL, email TEXT UNIQUE)
-"""</span>)</code></pre>
+&quot;&quot;&quot;</span>)</code></pre>
 
 <h2>Команды CLI</h2>
 <pre><code>SkyForge repl                    <span class="cmt"># REPL</span>
