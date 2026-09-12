@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Плейграунд — SkyForge</title>
+<style>
+:root{--bg:#0a0c10;--panel:#0f1117;--panel-2:#161923;--border:#242938;
+--text:#e6e9f2;--muted:#8b93a7;--accent:#8b6cff;--accent-2:#a592ff;
+--success:#3ddc84;--danger:#ff5c7c;--code-bg:#0b0d13}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);
+color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+header{padding:12px 20px;border-bottom:1px solid var(--border);
+display:flex;align-items:center;gap:14px;background:var(--panel);flex-wrap:wrap}
+header .logo{font-size:18px;font-weight:800;color:var(--accent-2);
+letter-spacing:-0.5px;text-decoration:none}
+header .logo span{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+header nav a{color:var(--muted);text-decoration:none;font-size:13px;margin-right:10px}
+header nav a:hover{color:var(--accent-2)}
+header .actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+select,button{background:var(--panel-2);border:1px solid var(--border);
+color:var(--text);padding:7px 14px;border-radius:6px;font-size:13px;
+font-family:inherit;cursor:pointer;transition:all .15s}
+select:hover,button:hover{border-color:var(--accent);color:var(--accent-2)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{background:var(--accent-2);color:#fff}
+button.primary:disabled{opacity:.4;cursor:not-allowed}
+main{flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.pane{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)}
+.pane:last-child{border-right:none}
+.pane-head{padding:8px 16px;font-size:11px;text-transform:uppercase;
+letter-spacing:1px;color:var(--muted);font-weight:700;
+background:var(--panel-2);border-bottom:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center}
+.pane-head .hint{font-size:10px;font-weight:400;letter-spacing:0}
+textarea{flex:1;background:var(--code-bg);color:var(--text);border:none;
+padding:16px;font-family:'JetBrains Mono','Consolas',monospace;
+font-size:13.5px;line-height:1.65;resize:none;outline:none;tab-size:4;
+white-space:pre;overflow:auto}
+#output{flex:1;background:var(--code-bg);color:#c8ffd4;padding:16px;
+font-family:'JetBrains Mono','Consolas',monospace;font-size:13px;
+line-height:1.6;white-space:pre-wrap;word-wrap:break-word;overflow:auto;margin:0}
+.status{padding:6px 16px;font-size:11.5px;color:var(--muted);
+background:var(--panel);border-top:1px solid var(--border);
+display:flex;justify-content:space-between}
+.status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+background:var(--muted);margin-right:6px;vertical-align:middle}
+.status.loading .dot{background:#ffb547;animation:pulse 1s infinite}
+.status.ready .dot{background:var(--success)}
+.status.error .dot{background:var(--danger)}
+@keyframes pulse{50%{opacity:.3}}
+@media(max-width:780px){main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo">SkyForge<span>плейграунд</span></a>
+  <nav>
+    <a href="/">← Документация</a>
+    <a href="/быстрый-старт">Быстрый старт</a>
+    <a href="/шпаргалка">Шпаргалка</a>
+  </nav>
+  <div class="actions">
+    <select id="examples">
+      <option value="">Примеры...</option>
+      <option value="hello">Привет, мир</option>
+      <option value="fib">Числа Фибоначчи</option>
+      <option value="classes">Классы и наследование</option>
+      <option value="inclusions">Включения и HOF</option>
+      <option value="exceptions">Исключения</option>
+      <option value="generators">Генераторы</option>
+      <option value="matching">Pattern matching</option>
+      <option value="recipes">Рецепт: разбор строки</option>
+    </select>
+    <button id="btn-clear">Очистить</button>
+    <button id="btn-run" class="primary" disabled>▶ Запустить</button>
+  </div>
+</header>
+<main>
+  <div class="pane">
+    <div class="pane-head">
+      <span>Редактор</span>
+      <span class="hint">Tab = 4 пробела · код сохраняется · Ctrl+Enter = запуск</span>
+    </div>
+    <textarea id="editor" spellcheck="false" autocomplete="off"></textarea>
+  </div>
+  <div class="pane">
+    <div class="pane-head">
+      <span>Вывод</span>
+      <span class="hint" id="timing"></span>
+    </div>
+    <pre id="output">Загрузка Python в браузере (первый раз ~15 секунд)...</pre>
+  </div>
+</main>
+<div class="status loading" id="status">
+  <span><span class="dot"></span><span id="status-text">Инициализация Pyodide...</span></span>
+  <span>SkyForge v1.0.5</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+<script>
+const LF = String.fromCharCode(10);
+
+const EXAMPLES = {
+  hello: [
+    '// Привет, мир',
+    'функция привет(имя) {',
+    '    вернуть "Привет, " + имя + "!"',
+    '}',
+    '',
+    'лог(привет("Мир"))',
+    'лог(привет("SkyForge"))'
+  ].join(LF),
+
+  fib: [
+    '// Числа Фибоначчи',
+    'функция фибо(n) {',
+    '    если n <= 1 { вернуть n }',
+    '    вернуть фибо(n - 1) + фибо(n - 2)',
+    '}',
+    '',
+    'для i от 0 до 10 {',
+    '    лог(фибо(i))',
+    '}'
+  ].join(LF),
+
+  classes: [
+    'класс Животное {',
+    '    функция инициализация(имя) { это.имя = имя }',
+    '    функция говорить() { вернуть "..." }',
+    '    функция представить() {',
+    '        вернуть "Я " + это.имя + ", говорю: " + это.говорить()',
+    '    }',
+    '}',
+    '',
+    'класс Собака наследник Животное {',
+    '    функция говорить() { вернуть "Гав!" }',
+    '}',
+    '',
+    'класс Кот наследник Животное {',
+    '    функция говорить() { вернуть супер.говорить() + " Мяу!" }',
+    '}',
+    '',
+    'лог(Собака("Шарик").представить())',
+    'лог(Кот("Барсик").представить())'
+  ].join(LF),
+
+  inclusions: [
+    '// Включения и функциональщина',
+    'пусть числа = диапазон(1, 11)',
+    '',
+    'лог("Квадраты:", [x * x для x в числа])',
+    'лог("Чётные:", [x для x в числа если x % 2 == 0])',
+    'лог("Сумма:", числа.сумма())',
+    'лог("Среднее:", числа.среднее())',
+    '',
+    'пусть пары = [[1, "а"], [2, "б"], [3, "в"]]',
+    'лог({k: v для k, v в пары})'
+  ].join(LF),
+
+  exceptions: [
+    'попробовать {',
+    '    пусть r = 1 / 0',
+    '    лог("Не дойдём")',
+    '} поймать e {',
+    '    лог("Ошибка:", e)',
+    '} наконец {',
+    '    лог("Finally всегда")',
+    '}',
+    '',
+    'функция проверить(n) {',
+    '    если n < 0 { бросить "Отрицательное число" }',
+    '    вернуть n',
+    '}',
+    '',
+    'попробовать { проверить(-5) } поймать e { лог("Поймали:", e) }'
+  ].join(LF),
+
+  generators: [
+    'функция чётные(макс) {',
+    '    для i от 0 до макс + 1 {',
+    '        если i % 2 == 0 { выдать i }',
+    '    }',
+    '}',
+    '',
+    'для x в чётные(10) {',
+    '    лог(x)',
+    '}',
+    '',
+    'пусть квадраты = чётные(10).карта(функ(x) { вернуть x * x })',
+    'лог("Квадраты чётных:", квадраты)'
+  ].join(LF),
+
+  matching: [
+    'функция описать(x) {',
+    '    совпадает x {',
+    '        случай 0 { вернуть "ноль" }',
+    '        случай 1 { вернуть "один" }',
+    '        случай [a, b] { вернуть "пара: " + a + ", " + b }',
+    '        случай {"имя": n} { вернуть "имя: " + n }',
+    '        иначе { вернуть "не знаю" }',
+    '    }',
+    '}',
+    '',
+    'лог(описать(0))',
+    'лог(описать(1))',
+    'лог(описать([10, 20]))',
+    'лог(описать({"имя": "Алиса"}))',
+    'лог(описать(99))'
+  ].join(LF),
+
+  recipes: [
+    '// Разбор CSV-строки и отчёт',
+    'пусть данные = "Алиса,30,Москва;Боб,25,Питер;Катя,35,Москва".разделить(";")',
+    'пусть города = {}',
+    '',
+    'для строка в данные {',
+    '    пусть ч = строка.разделить(",")',
+    '    пусть город = ч[2]',
+    '    города[город] = города.получить(город, 0) + 1',
+    '}',
+    '',
+    'для п в города.элементы() {',
+    '    лог(п[0] + ": " + п[1])',
+    '}'
+  ].join(LF)
+};
+
+const editor = document.getElementById('editor');
+const output = document.getElementById('output');
+const btnRun = document.getElementById('btn-run');
+const btnClear = document.getElementById('btn-clear');
+const examples = document.getElementById('examples');
+const statusEl = document.getElementById('status');
+const statusText = document.getElementById('status-text');
+const timing = document.getElementById('timing');
+
+let pyodide = null;
+let ready = false;
+
+const DEFAULT_CODE = [
+  '// Напиши код SkyForge и нажми «Запустить»',
+  'лог("Привет, мир!")',
+  '',
+  'пусть числа = [1, 2, 3, 4, 5]',
+  'лог("Сумма:", числа.сумма())',
+  'лог("Квадраты:", числа.карта(функ(x) { вернуть x * x }))'
+].join(LF);
+
+editor.value = localStorage.getItem('skf_code') || DEFAULT_CODE;
+editor.addEventListener('input', () => localStorage.setItem('skf_code', editor.value));
+editor.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = editor.selectionStart, end = editor.selectionEnd;
+    editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(end);
+    editor.selectionStart = editor.selectionEnd = s + 4;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runCode(); }
+});
+
+examples.addEventListener('change', () => {
+  if (examples.value && EXAMPLES[examples.value]) {
+    editor.value = EXAMPLES[examples.value];
+    localStorage.setItem('skf_code', editor.value);
+    examples.value = '';
+  }
+});
+
+btnClear.addEventListener('click', () => {
+  editor.value = DEFAULT_CODE;
+  localStorage.setItem('skf_code', editor.value);
+  output.textContent = 'Готов';
+  timing.textContent = '';
+});
+
+function setStatus(text, cls) {
+  statusText.textContent = text;
+  statusEl.className = 'status ' + (cls || '');
+}
+
+function appendOutput(text) {
+  if (!text) return;
+  if (!text.endsWith(LF)) text += LF;
+  output.textContent = (output.textContent || '') + text;
+  output.scrollTop = output.scrollHeight;
+}
+
+async function initPyodide() {
+  try {
+    setStatus('Загрузка Python...', 'loading');
+    pyodide = await loadPyodide({
+      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.2/full/'
+    });
+
+    setStatus('Загрузка sqlite3...', 'loading');
+    await pyodide.loadPackage('sqlite3');
+
+    setStatus('Загрузка micropip...', 'loading');
+    await pyodide.loadPackage('micropip');
+
+    setStatus('Установка skyforge-lang...', 'loading');
+    await pyodide.runPythonAsync(
+      'import micropip' + LF +
+      'await micropip.install("skyforge-lang")'
+    );
+
+    pyodide.setStdout({ batched: (s) => { if (s) appendOutput(s); } });
+    pyodide.setStderr({ batched: (s) => { if (s) appendOutput(s); } });
+
+    ready = true;
+    btnRun.disabled = false;
+    setStatus('Готов — Ctrl+Enter, чтобы запустить', 'ready');
+    output.textContent = 'Python загружен. Нажми «Запустить» или Ctrl+Enter.';
+  } catch (err) {
+    setStatus('Ошибка загрузки', 'error');
+    output.textContent = 'Не удалось загрузить Pyodide: ' + (err && err.message ? err.message : String(err));
+    console.error(err);
+  }
+}
+
+async function runCode() {
+  if (!ready || !pyodide) return;
+  btnRun.disabled = true;
+  output.textContent = '';
+  timing.textContent = '';
+  const t0 = performance.now();
+  pyodide.globals.set('__skf_source__', editor.value);
+  try {
+    await pyodide.runPythonAsync(
+      'from skyforge.core import Lexer, Parser, Interpreter' + LF +
+      'from skyforge import errors as E' + LF +
+      'source = __skf_source__' + LF +
+      'try:' + LF +
+      '    tokens = Lexer(source).tokenize()' + LF +
+      '    program = Parser(tokens).parse()' + LF +
+      '    Interpreter().run(program)' + LF +
+      'except SyntaxError as e:' + LF +
+      '    print(E.format_syntax_error(e, source=source))' + LF +
+      'except Exception as e:' + LF +
+      '    print(E.format_runtime_error(e))'
+    );
+  } catch (err) {
+    appendOutput('Внутренняя ошибка: ' + (err && err.message ? err.message : String(err)));
+    console.error(err);
+  }
+  const dt = (performance.now() - t0).toFixed(0);
+  timing.textContent = dt + ' мс';
+  btnRun.disabled = false;
+}
+
+btnRun.addEventListener('click', runCode);
+initPyodide();
+</script>
+</body>
+</html>
