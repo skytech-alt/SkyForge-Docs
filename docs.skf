@@ -559,6 +559,18 @@ pip install -e .</code></pre>
 <h2>Удаление</h2>
 <pre><code>pip uninstall skyforge-lang</code></pre>
 
+<h2>Windows (.exe, без Python)</h2>
+<p>Скачай готовый файл — Python не нужен:</p>
+<p>
+  <a href="https://github.com/skytech-alt/SkyForge-Docs/releases/latest/download/SkyForge.exe"
+     style="display:inline-block;background:#8b6cff;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600">
+    ⬇ Скачать SkyForge.exe
+  </a>
+</p>
+<p style="color:#8b93a7;font-size:13px">
+  ~13 МБ · Windows 10/11 · Запускается двойным кликом
+</p>
+
 <h2>Частые проблемы</h2>
 <div class="card">
   <h3>SkyForge не распознаётся</h3>
