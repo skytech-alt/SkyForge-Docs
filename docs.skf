@@ -324,6 +324,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         ["/orm", "ORM"],
         ["/autorest", "🚀 AutoREST"],
         ["/gui", "Десктоп / GUI"],
+        ["/vscode", "🛠 VS Code / LSP"],
         ["/тесты", "Тестирование"],
     ]],
     ["Практика", [
@@ -2341,7 +2342,7 @@ app.маршрут("/faq", "GET", функция(з) {
 <p>Да, интерпретатор на Python медленнее самого Python в 30-100 раз. Для веба это неважно — узкое место сеть. Для CPU-задач — используй <code>numpy</code>/<code>pandas</code> через мост.</p>
 
 <h2>Есть LSP / автодополнение в редакторе?</h2>
-<p>Пока нет. Синтаксис подсвечивается в <code>SkyForge gui</code>. Планируется LSP-сервер и расширение VS Code — см. <a href="/дорожная-карта">дорожную карту</a>.</p>
+<p>Да. Установи <code>pip install skyforge-lsp</code> и расширение SkyForge для VS Code. Получишь диагностику ошибок при наборе, автодополнение, hover-документацию, переход к определению (F12) и структуру файла. Подробнее — <a href="/vscode">/vscode</a>.</p>
 
 <h2>Как писать тесты?</h2>
 <p>Декоратор <code>@тест("имя")</code> + ассерты <code>ожидать_равно</code>, <code>ожидать_ошибку</code> и др. Запуск: <code>SkyForge test tests.skf</code>. Подробно — <a href="/тесты">тут</a>.</p>
@@ -2370,6 +2371,120 @@ app.маршрут("/faq", "GET", функция(з) {
 <p>Да — <a href="/дорожная-карта">дорожная карта</a>. Ближайшие шаги: LSP-сервер, расширение VS Code, Jupyter kernel, генератор статических сайтов, пакетный менеджер.</p>
 """
     вернуть страница("FAQ", "/faq", контент)
+})
+
+
+// ================================================================
+// VS CODE / LSP
+// ================================================================
+app.маршрут("/vscode", "GET", функция(з) {
+    пусть контент = """
+<h1>VS Code / LSP <span class="badge">Новое</span></h1>
+<p class="subtitle">Диагностика, автодополнение, hover, F12 — прямо в редакторе.</p>
+
+<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+<p style="font-size:17px;margin:0"><strong>SkyForge теперь понимает VS Code.</strong></p>
+<p style="color:#8b93a7;margin-top:8px">Полноценный Language Server Protocol: подсветка ошибок при наборе, подсказки, переход к определению, структура файла.</p>
+</div>
+
+<h2>Что это даёт</h2>
+<div class="grid">
+  <div class="card">
+    <h3>🔴 Диагностика</h3>
+    <p>Синтаксические ошибки подсвечиваются красной волнистой линией прямо при наборе — не нужно запускать <code>SkyForge check</code>.</p>
+  </div>
+  <div class="card">
+    <h3>💡 Автодополнение</h3>
+    <p>Ctrl+Space — список ключевых слов, встроенных функций и символов текущего файла. Работает контекстно: после точки — только методы.</p>
+  </div>
+  <div class="card">
+    <h3>📖 Hover</h3>
+    <p>Наведи на функцию — всплывёт сигнатура и описание. Работает для всех встроенных (~200 имён) и для твоих функций.</p>
+  </div>
+  <div class="card">
+    <h3>🎯 Переход к определению</h3>
+    <p>F12 на вызове функции или имени класса — прыжок к месту объявления в файле.</p>
+  </div>
+  <div class="card">
+    <h3>🗂 Outline</h3>
+    <p>Ctrl+Shift+O — структура файла: все функции, классы, переменные верхнего уровня.</p>
+  </div>
+  <div class="card">
+    <h3>🎨 Подсветка синтаксиса</h3>
+    <p>TextMate-грамматика: ключевые слова, строки, числа, комментарии, встроенные функции.</p>
+  </div>
+</div>
+
+<h2>Установка</h2>
+
+<h3>1. LSP-сервер</h3>
+<pre><code>pip install skyforge-lsp</code></pre>
+
+<h3>2. Расширение VS Code</h3>
+<p>Открой VS Code → Extensions → найди <strong>SkyForge</strong> → Install. Или установи вручную из <code>.vsix</code>:</p>
+<pre><code>code --install-extension skyforge-skf-0.1.0.vsix</code></pre>
+
+<h3>3. Проверка</h3>
+<pre><code>skyforge-lsp --version
+<span class="cmt"># skyforge-lsp 0.1.0</span></code></pre>
+
+<h2>Использование</h2>
+<p>Открой любой <code>.skf</code> файл — сервер запустится автоматически. Никаких настроек не нужно.</p>
+
+<h3>Что попробовать</h3>
+<pre><code><span class="cmt">// 1. Диагностика — набери незакрытую скобку</span>
+<span class="fn">лог</span>(
+
+<span class="cmt">// 2. Автодополнение — Ctrl+Space в пустой строке</span>
+<span class="cmt">// 3. Hover — наведи на слово "сумма"</span>
+<span class="cmt">// 4. F12 — на вызове своей функции</span>
+<span class="cmt">// 5. Outline — Ctrl+Shift+O</span></code></pre>
+
+<h2>Ручной запуск сервера</h2>
+<p>Обычно VS Code запускает сервер сам, но для отладки можно запустить вручную:</p>
+<pre><code>skyforge-lsp --stdio        <span class="cmt"># через stdin/stdout</span>
+skyforge-lsp --tcp 2087     <span class="cmt"># через TCP на 127.0.0.1:2087</span>
+skyforge-lsp --help         <span class="cmt"># справка</span></code></pre>
+
+<h2>Настройки VS Code</h2>
+<p>Если <code>skyforge-lsp</code> не в <code>PATH</code> — укажи полный путь в настройках:</p>
+<pre><code>{
+  "skyforge.serverPath": "/полный/путь/к/.venv/bin/skyforge-lsp"
+}</code></pre>
+
+<h2>Другие редакторы</h2>
+<p>LSP — универсальный протокол. Сервер работает в любом редакторе с поддержкой LSP:</p>
+<div class="grid">
+  <div class="card"><h3>VS Code</h3><p>Расширение SkyForge из Marketplace</p></div>
+  <div class="card"><h3>Neovim</h3><p>Через <code>nvim-lspconfig</code>: три строки конфига</p></div>
+  <div class="card"><h3>Sublime Text</h3><p>Через LSP-плагин</p></div>
+  <div class="card"><h3>Emacs</h3><p>Через <code>lsp-mode</code> или <code>eglot</code></p></div>
+</div>
+
+<h2>Технические детали</h2>
+<ul>
+  <li>Реализован на Python через <code>pygls</code> (LSP framework)</li>
+  <li>Пакет на PyPI: <a href="https://pypi.org/project/skyforge-lsp/" target="_blank">skyforge-lsp</a></li>
+  <li>Использует лексер и парсер <code>skyforge-lang</code> — тот же, что и CLI</li>
+  <li>~700 строк Python, полностью открытый исходный код</li>
+  <li>Работает с Python 3.9+</li>
+</ul>
+
+<h2>Что дальше</h2>
+<p>Уже работает главное. Дальше в планах:</p>
+<ul>
+  <li><strong>Signature help</strong> — подсказка параметров при наборе <code>(</code></li>
+  <li><strong>Rename (F2)</strong> — переименование символа во всём файле</li>
+  <li><strong>Переход между файлами</strong> — F12 через <code>подключить "модуль.skf"</code></li>
+  <li><strong>Completion с textEdit</strong> — корректная замена набранного префикса</li>
+</ul>
+<p>Следи за <a href="/дорожная-карта">дорожной картой</a>.</p>
+
+<div class="card" style="border-color:#3ddc84;background:linear-gradient(135deg,rgba(61,220,132,0.05),transparent)">
+<p style="margin:0">💡 <strong>Совет:</strong> после установки открой любой пример из <code>examples/</code> и просто понаводи мышкой на разные слова — сразу увидишь, что работает.</p>
+</div>
+"""
+    вернуть страница("VS Code / LSP", "/vscode", контент)
 })
 
 // ================================================================
@@ -2404,6 +2519,8 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ Сайт документации на самом SkyForge</li>
   <li>✅ Плейграунд на Pyodide — запуск кода в браузере</li>
   <li>✅ 79/79 тестов проходят за 0.70 с</li>
+  <li>✅ <strong>LSP-сервер <code>skyforge-lsp</code></strong> — опубликован на PyPI</li>
+  <li>✅ Диагностика, автодополнение, hover, F12, outline в VS Code</li>
 </ul>
 </div>
 
@@ -2425,12 +2542,12 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
 <h2>Ближайшие планы</h2>
 <div class="grid">
   <div class="card">
-    <h3>🔧 LSP-сервер</h3>
-    <p>Автодополнение, переход к определению, диагностика ошибок в реальном времени.</p>
+    <h3>🔧 LSP: signature help и rename</h3>
+    <p>Подсказка параметров при наборе <code>(</code> и переименование символа по F2.</p>
   </div>
   <div class="card">
-    <h3>📝 Расширение VS Code</h3>
-    <p>Подсветка <code>.skf</code> файлов, сниппеты, запуск по F5.</p>
+    <h3>📝 LSP: переход между файлами</h3>
+    <p>F12 работает в пределах одного файла. Дальше — переход в <code>подключить "модуль.skf"</code>.</p>
   </div>
   <div class="card">
     <h3>📓 Jupyter kernel</h3>
@@ -2546,6 +2663,7 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
         ["/orm", "0.9", "monthly", "ORM для SQLite"],
         ["/autorest", "0.9", "monthly", "AutoREST — CRUD-API и админка из схемы БД"],
         ["/gui", "0.7", "monthly", "Десктопные приложения на SkyForge"],
+        ["/vscode", "0.9", "weekly", "LSP-сервер и расширение VS Code для SkyForge"],
         ["/тесты", "0.8", "monthly", "Тестирование в SkyForge"],
         ["/рецепты", "0.8", "weekly", "Готовые рецепты и сниппеты"],
         ["/шпаргалка", "0.8", "monthly", "Шпаргалка по синтаксису"],
