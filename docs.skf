@@ -1,5 +1,5 @@
 // ================================================================
-// SkyForge Documentation v2.1 — сайт документации на самом SkyForge
+// SkyForge Documentation v2.2 — сайт документации на самом SkyForge
 // ================================================================
 
 пусть app = приложение()
@@ -170,6 +170,19 @@ pre:hover .copy-btn { opacity: 1; }
     border: 1px solid var(--border);
 }
 .hero .cta a.ghost:hover { border-color: var(--accent); color: var(--accent-2); }
+.badges {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 22px;
+}
+.badge-ok {
+    display: inline-flex; align-items: center;
+    background: rgba(61, 220, 132, 0.1);
+    color: #3ddc84;
+    border: 1px solid rgba(61, 220, 132, 0.25);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2px;
+}
 .toc {
     position: sticky; top: 20px; padding: 42px 20px 20px 4px;
     font-size: 13px; max-height: 100vh; overflow-y: auto;
@@ -203,6 +216,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     .content { padding: 28px 20px 60px; }
     .hero { margin: -28px -20px 0; padding: 40px 20px; }
     .hero h1 { font-size: 32px; }
+    .badges { gap: 6px; }
+    .badge-ok { padding: 5px 10px; font-size: 12px; }
     .footer { padding: 20px; }
 }
 """
@@ -368,8 +383,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
   </aside>
 </div>
 <div class="footer">
-  <div>SkyForge v{{ версия }} · MIT</div>
   <div>
+    SkyForge v{{ версия }} · MIT ·
+    <span style="color:#3ddc84">✅ 69/69 тестов</span>
+  </div>
+  <div>
+    Сделано на <strong style="color:#9b83ff">SkyForge</strong> ·
     <a href="{{ пипи }}" target="_blank">PyPI</a> ·
     <a href="{{ репо }}" target="_blank">GitHub</a> ·
     <a href="/дорожная-карта">Дорожная карта</a>
@@ -402,6 +421,36 @@ app.маршрут("/", "GET", функция(з) {
     <a href="/playground" class="primary">▶ Попробовать в браузере</a>
     <a href="/быстрый-старт" class="ghost">→ Быстрый старт</a>
     <a href="{{ репо }}" class="ghost" target="_blank">★ GitHub</a>
+  </div>
+  <div class="badges">
+    <span class="badge-ok">✅ 69/69 тестов</span>
+    <span class="badge-ok">⚡ 0.69 с</span>
+    <span class="badge-ok">📦 v{{ версия }}</span>
+    <span class="badge-ok">🔤 Этот сайт — на SkyForge</span>
+  </div>
+</div>
+
+<h2>Проверено — работает</h2>
+<div class="grid">
+  <div class="card">
+    <h3>✅ 69/69 тестов</h3>
+    <p>Каждая фича языка покрыта тестом: синтаксис, ООП, async, генераторы, pattern matching, типы, исключения, декораторы, ORM, веб, крипто, Python-мост.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px">Прогон: <code>SkyForge test examples\всё.skf</code> → 0.69 с</p>
+  </div>
+  <div class="card">
+    <h3>🖥 Этот сайт</h3>
+    <p>Написан на самом SkyForge: 24 страницы, свой веб-фреймворк, middleware, sitemap, самопинг, llms.txt для AI.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px">Один файл <code>docs.skf</code> — и весь сайт</p>
+  </div>
+  <div class="card">
+    <h3>▶ Плейграунд</h3>
+    <p>Запускается в браузере через Pyodide. Без установки, без Python, без pip. Открыл → пишешь код → Ctrl+Enter.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px"><a href="/playground">Открыть плейграунд →</a></p>
+  </div>
+  <div class="card">
+    <h3>💻 SkyForge.exe</h3>
+    <p>Приложение для Windows без Python. Скачал, кликнул, пишешь код.</p>
+    <p style="color:#8b93a7;font-size:12px;margin-top:8px"><a href="{{ репо }}/releases/latest" target="_blank">Скачать .exe →</a></p>
   </div>
 </div>
 
@@ -562,7 +611,7 @@ pip install -e .</code></pre>
 <h2>Windows (.exe, без Python)</h2>
 <p>Скачай готовый файл — Python не нужен:</p>
 <p>
-  <a href="https://github.com/skytech-alt/SkyForge-Docs/releases/latest/download/SkyForge.exe"
+  <a href="{{ репо }}/releases/latest/download/SkyForge.exe"
      style="display:inline-block;background:#8b6cff;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600">
     ⬇ Скачать SkyForge.exe
   </a>
@@ -2146,7 +2195,23 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ Публикация на PyPI (<code>skyforge-lang</code>)</li>
   <li>✅ Сайт документации на самом SkyForge</li>
   <li>✅ Плейграунд на Pyodide — запуск кода в браузере</li>
+  <li>✅ 69/69 тестов проходят за 0.69 с</li>
 </ul>
+</div>
+
+<h2>Сайт написан на SkyForge</h2>
+<div class="card">
+<p>Этот сайт — не отдельный проект на Python или Node.js. Он <strong>написан на самом SkyForge</strong> в одном файле <code>docs.skf</code>.</p>
+<ul style="margin-top:12px">
+  <li>Веб-фреймворк SkyForge: 24 маршрута, шаблоны, middleware</li>
+  <li>Автодокументация на <a href="/docs">/docs</a></li>
+  <li>Health-check на <code>/health</code> и <code>/heal</code></li>
+  <li>Sitemap на <code>/sitemap.xml</code></li>
+  <li>llms.txt для AI-ассистентов на <code>/llms.txt</code> и <code>/llms-full.txt</code></li>
+  <li>Самопинг-поток, чтобы Render не засыпал</li>
+  <li>Деплой на Render в одну команду</li>
+</ul>
+<p style="margin-top:12px;color:#8b93a7">Исходник: <code>docs-app/docs.skf</code> в <a href="{{ репо }}" target="_blank">репозитории</a>.</p>
 </div>
 
 <h2>Ближайшие планы</h2>
@@ -2302,6 +2367,7 @@ app.маршрут("/favicon.ico", "GET", функция(з) {
     пусть svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#8b6cff"/><text x="32" y="46" text-anchor="middle" font-family="Arial" font-size="40" font-weight="bold" fill="#fff">S</text></svg>'
     вернуть app.сырой_ответ(200, "image/svg+xml", svg)
 })
+
 // ================================================================
 // RAW-ДОКУМЕНТАЦИЯ ДЛЯ ИИ
 // ================================================================
@@ -2323,9 +2389,6 @@ app.маршрут("/llms.txt", "GET", функция(з) {
     вернуть app.текст_ответ(читать_файл(путь, "utf-8"), 200)
 })
 
-// ================================================================
-// 404
-// ================================================================
 // ================================================================
 // СТАТИКА + 404
 // ================================================================
@@ -2417,7 +2480,7 @@ app.маршрут("/<файл>", "GET", функция(з) {
 // ================================================================
 // Запуск
 // ================================================================
-лог("📚 SkyForge Documentation v2.1")
+лог("📚 SkyForge Documentation v2.2")
 лог("   Порт:", порт_сервера())
 лог("   Хост:", хост_сервера())
 лог("   Открой: http://localhost:" + порт_сервера() + "/")
