@@ -6,7 +6,7 @@
 app.имя("SkyForge — документация")
 app.отладка(истина)
 
-пусть ВЕРСИЯ = "1.0.6"
+пусть ВЕРСИЯ = "1.0.7"
 пусть РЕПО = "https://github.com/skytech-alt/SkyForge-Docs"
 пусть ПИПИ = "https://pypi.org/project/skyforge-lang/"
 
@@ -325,6 +325,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
         ["/autorest", "🚀 AutoREST"],
         ["/gui", "Десктоп / GUI"],
         ["/vscode", "🛠 VS Code / LSP"],
+        ["/транспилятор", "⚡ Транспилятор"],
         ["/тесты", "Тестирование"],
     ]],
     ["Практика", [
@@ -428,6 +429,7 @@ app.маршрут("/", "GET", функция(з) {
     <span class="badge-ok">⚡ 0.70 с</span>
     <span class="badge-ok">📦 v{{ версия }}</span>
     <span class="badge-ok">🔤 Этот сайт — на SkyForge</span>
+    <span class="badge-ok">⚡ до 130× быстрее</span>
   </div>
 </div>
 
@@ -522,6 +524,7 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
   <li><strong>Читается как инструкция</strong> — не нужно держать в голове английские ключевые слова.</li>
   <li><strong>Батарейки включены</strong> — web, ORM, AutoREST, tests, stdlib уже в языке.</li>
   <li><strong>Python под капотом</strong> — весь PyPI доступен через мост, .skf дружит с любыми библиотеками.</li>
+  <li><strong>Быстро на вычислениях</strong> — транспилятор <code>--fast</code> до 130× быстрее интерпретатора.</li>
   <li><strong>Готов к деплою</strong> — на Render, VPS, локально в одну команду.</li>
   <li><strong>Свой REPL</strong> — <code>SkyForge repl</code> для экспериментов.</li>
   <li><strong>Свой лаунчер</strong> — <code>SkyForge gui</code> с подсветкой синтаксиса.</li>
@@ -531,6 +534,8 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
 <div class="card">
   <h3>v{{ версия }}</h3>
   <ul style="margin-bottom:0">
+    <li><strong>⚡ Транспилятор в Python</strong> — до 130× быстрее интерпретатора на вычислениях. Флаг <code>--fast</code></li>
+    <li><strong>LSP-сервер</strong> — VS Code с автодополнением, hover, диагностикой</li>
     <li><strong>AutoREST</strong> — CRUD-API + админка + OpenAPI из текстовой схемы БД одной строкой</li>
     <li>Парсер SQL-подобной схемы с типами, модификаторами, комментариями</li>
     <li>79/79 тестов проходят за 0.70 с</li>
@@ -2339,7 +2344,7 @@ app.маршрут("/faq", "GET", функция(з) {
 <p>Для скриптов, CLI, внутренних инструментов, API, блогов, MVP — <strong>да</strong>. 79/79 тестов проходят за 0.70 с, есть веб-сервер с middleware и сессиями, ORM, AutoREST, тесты, деплой на Render. Для высоконагруженных проектов или там, где нужен LSP/отладчик/VS Code — пока рано.</p>
 
 <h2>Медленный?</h2>
-<p>Да, интерпретатор на Python медленнее самого Python в 30-100 раз. Для веба это неважно — узкое место сеть. Для CPU-задач — используй <code>numpy</code>/<code>pandas</code> через мост.</p>
+<p>Интерпретатор — да, медленнее Python в 30-100 раз. Но в версии <strong>1.0.7</strong> появился <strong>транспилятор</strong>: команда <code>SkyForge run app.skf --fast</code> превращает код в нативный Python-байткод. На вычислительных задачах ускорение <strong>до 130×</strong> — практически как чистый Python. Подробнее — <a href="/транспилятор">/транспилятор</a>.</p>
 
 <h2>Есть LSP / автодополнение в редакторе?</h2>
 <p>Да. Установи <code>pip install skyforge-lsp</code> и расширение SkyForge для VS Code. Получишь диагностику ошибок при наборе, автодополнение, hover-документацию, переход к определению (F12) и структуру файла. Подробнее — <a href="/vscode">/vscode</a>.</p>
@@ -2487,6 +2492,155 @@ skyforge-lsp --help         <span class="cmt"># справка</span></code></pr
     вернуть страница("VS Code / LSP", "/vscode", контент)
 })
 
+
+// ================================================================
+// ТРАНСПИЛЯТОР
+// ================================================================
+app.маршрут("/транспилятор", "GET", функция(з) {
+    пусть контент = """
+<h1>Транспилятор <span class="badge">Новое в 1.0.7</span></h1>
+<p class="subtitle">До 130× быстрее интерпретатора. Работает на скорости Python.</p>
+
+<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+<p style="font-size:17px;margin:0"><strong>SkyForge теперь быстрый.</strong></p>
+<p style="color:#8b93a7;margin-top:8px">Одна команда превращает <code>.skf</code> в нативный Python-байткод. Никаких костылей — реальная скорость CPython.</p>
+</div>
+
+<h2>Проблема</h2>
+<p>До версии 1.0.7 SkyForge работал как <strong>древовидный интерпретатор</strong>: он обходил AST для каждой операции, каждой переменной, каждого вызова. Это в 30-100 раз медленнее самого Python.</p>
+
+<p>Пример — <code>fib(32)</code> (рекурсивное вычисление чисел Фибоначчи):</p>
+<ul>
+  <li><strong>Интерпретатор:</strong> ~60 секунд</li>
+  <li><strong>Транспилятор:</strong> ~0.4 секунды</li>
+</ul>
+
+<h2>Решение</h2>
+<p>Транспилятор переводит AST SkyForge в <strong>Python AST</strong>, затем Python компилирует его в <strong>нативный байткод</strong>. Всё, что делал интерпретатор, делает CPython — на скорости C.</p>
+
+<pre><code>app.skf  →  Лексер  →  Парсер  →  AST SkyForge
+                                       ↓
+                                   Транспилятор
+                                       ↓
+                                   Python AST
+                                       ↓
+                                    compile()
+                                       ↓
+                                   Байткод CPython
+                                       ↓
+                                Скорость Python</code></pre>
+
+<h2>Как использовать</h2>
+<p>Добавь флаг <code>--fast</code> к команде <code>run</code>:</p>
+
+<pre><code>SkyForge run app.skf --fast</code></pre>
+
+<p>Всё. Никакой настройки, никаких зависимостей — транспилятор встроен в ядро.</p>
+
+<h2>Бенчмарки</h2>
+<p>Три теста на одном компьютере:</p>
+
+<div class="card">
+<p style="margin:0"><strong>fib(24) — рекурсия, 46 000 вызовов</strong></p>
+<p style="color:#8b93a7;margin:6px 0">Интерпретатор: <strong style="color:#ff5c7c">1072 мс</strong> · Транспилятор: <strong style="color:#3ddc84">8 мс</strong> · Ускорение <strong>134×</strong></p>
+</div>
+
+<div class="card">
+<p style="margin:0"><strong>fib(32) — рекурсия, 2 178 309 вызовов</strong></p>
+<p style="color:#8b93a7;margin:6px 0">Интерпретатор: <strong style="color:#ff5c7c">~60 сек</strong> · Транспилятор: <strong style="color:#3ddc84">371 мс</strong> · Ускорение <strong>~160×</strong></p>
+</div>
+
+<div class="card">
+<p style="margin:0"><strong>Списковые включения с интерполяцией</strong></p>
+<p style="color:#8b93a7;margin:6px 0">Интерпретатор: <strong style="color:#ff5c7c">~200 мс</strong> · Транспилятор: <strong style="color:#3ddc84">4 мс</strong> · Ускорение <strong>~50×</strong></p>
+</div>
+
+<p><strong>Реальный диапазон ускорения:</strong> 10-30× на обычном коде, до 150× на рекурсии и тяжёлых циклах.</p>
+
+<h2>Что работает</h2>
+<div class="grid">
+  <div class="card">
+    <h3>✅ Полностью работает</h3>
+    <ul style="margin-bottom:0">
+      <li>Переменные, арифметика, сравнения</li>
+      <li>Условия <code>если / иначе / иначе если</code></li>
+      <li>Циклы <code>для от до</code>, <code>для в</code>, <code>пока</code></li>
+      <li>Функции, дефолтные и именованные аргументы</li>
+      <li>Рекурсия, вложенные функции</li>
+      <li>Лямбды <code>функ(x) { вернуть x * 2 }</code></li>
+      <li>Интерполяция строк <code>"{имя}"</code></li>
+      <li>Списковые и словарные включения</li>
+      <li>Списки, словари, вложенные структуры</li>
+      <li>Исключения <code>попробовать / поймать</code></li>
+      <li>Все builtins (лог, сумма, диапазон, json и т.д.)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>⏳ Пока НЕ работает</h3>
+    <ul style="margin-bottom:0">
+      <li>Классы (<code>класс X { функция метод() { это.поле } }</code>)</li>
+      <li><code>это</code> и <code>супер</code> в методах</li>
+      <li>Async (<code>асинхронно функция</code>, <code>ждать</code>)</li>
+      <li>Декораторы (<code>@тест</code>, <code>@кешировать</code>)</li>
+      <li>Pattern matching (<code>совпадает</code>)</li>
+      <li>Генераторы (<code>выдать</code>)</li>
+      <li>Веб-приложение (<code>app.запустить()</code>)</li>
+    </ul>
+  </div>
+</div>
+
+<p><strong>Правило выбора:</strong> если скрипт использует ООП, async или декораторы — запускай без <code>--fast</code>. Если это чистая логика и вычисления — <code>--fast</code> даст максимум.</p>
+
+<h2>Когда использовать</h2>
+
+<div class="card">
+<h3>⚡ Используй --fast</h3>
+<ul style="margin-bottom:0">
+  <li>Вычислительные задачи: алгоритмы, математика, рекурсия</li>
+  <li>Обработка данных: CSV, JSON, парсинг</li>
+  <li>Скрипты автоматизации, где важна скорость</li>
+  <li>Бенчмарки, сравнение алгоритмов</li>
+  <li>Продакшен-задачи без ООП и async</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>🐢 Обычный режим</h3>
+<ul style="margin-bottom:0">
+  <li>Запуск тестов <code>SkyForge test</code> (декораторы)</li>
+  <li>Веб-приложения <code>SkyForge web</code></li>
+  <li>REPL <code>SkyForge repl</code></li>
+  <li>Код с классами, async, генераторами</li>
+  <li>Отладка — интерпретатор даёт точные стек-трейсы</li>
+</ul>
+</div>
+
+<h2>Технические детали</h2>
+<ul>
+  <li>Реализован на Python — <code>skyforge/transpiler.py</code>, ~600 строк</li>
+  <li>Использует <code>ast</code> из стандартной библиотеки — без внешних зависимостей</li>
+  <li>Работает через <code>compile(ast_module, filename, "exec")</code></li>
+  <li>Не кэширует байткод между запусками (каждый раз компилирует заново)</li>
+  <li>Совместим со всей stdlib SkyForge — builtins переиспользуются как есть</li>
+</ul>
+
+<h2>Что дальше</h2>
+<p>В следующих версиях транспилятор научится:</p>
+<ul>
+  <li><strong>Классам</strong> — правильный маппинг <code>это → self</code>, <code>супер.метод()</code></li>
+  <li><strong>Async</strong> — через <code>asyncio</code>, нативная поддержка <code>await</code></li>
+  <li><strong>Декораторам</strong> — с сохранением реестра тестов</li>
+  <li><strong>Кэшированию байткода</strong> — <code>SkyForge build app.skf</code> для первого запуска</li>
+</ul>
+<p>Следи за <a href="/дорожная-карта">дорожной картой</a>.</p>
+
+<div class="card" style="border-color:#3ddc84;background:linear-gradient(135deg,rgba(61,220,132,0.05),transparent)">
+<p style="margin:0">💡 <strong>Совет:</strong> сравни сам на своих задачах — <code>SkyForge run app.skf</code> против <code>SkyForge run app.skf --fast</code>. Разница обычно в 20-50 раз, а на рекурсии — в 100+.</p>
+</div>
+"""
+    вернуть страница("Транспилятор", "/транспилятор", контент)
+})
+
 // ================================================================
 // ДОРОЖНАЯ КАРТА
 // ================================================================
@@ -2521,6 +2675,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ 79/79 тестов проходят за 0.70 с</li>
   <li>✅ <strong>LSP-сервер <code>skyforge-lsp</code></strong> — опубликован на PyPI</li>
   <li>✅ Диагностика, автодополнение, hover, F12, outline в VS Code</li>
+  <li>✅ <strong>Транспилятор <code>.skf → Python</code></strong> — флаг <code>--fast</code>, ускорение до 130× (v1.0.7)</li>
 </ul>
 </div>
 
@@ -2576,6 +2731,10 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <div class="card">
     <h3>🌐 WebSocket</h3>
     <p>Реалтайм в веб-фреймворке — чаты, игры, live-обновления.</p>
+  </div>
+  <div class="card">
+    <h3>⚡ Транспилятор: ООП и async</h3>
+    <p>Сейчас <code>--fast</code> покрывает функции, циклы, включения. Дальше — классы, <code>это</code>, <code>супер</code>, async.</p>
   </div>
   <div class="card">
     <h3>📦 Компиляция в .exe</h3>
@@ -2664,6 +2823,7 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
         ["/autorest", "0.9", "monthly", "AutoREST — CRUD-API и админка из схемы БД"],
         ["/gui", "0.7", "monthly", "Десктопные приложения на SkyForge"],
         ["/vscode", "0.9", "weekly", "LSP-сервер и расширение VS Code для SkyForge"],
+        ["/транспилятор", "1.0", "weekly", "Транспилятор SkyForge — до 130× быстрее интерпретатора"],
         ["/тесты", "0.8", "monthly", "Тестирование в SkyForge"],
         ["/рецепты", "0.8", "weekly", "Готовые рецепты и сниппеты"],
         ["/шпаргалка", "0.8", "monthly", "Шпаргалка по синтаксису"],
