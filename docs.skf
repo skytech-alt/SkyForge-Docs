@@ -803,6 +803,12 @@ pip install -e .</code></pre>
 <h2>Удаление</h2>
 <pre><code>pip uninstall skyforge-lang</code></pre>
 
+<h2>Raspberry Pi</h2>
+<p><code>skyforge-lang</code> — чистый Python-пакет. На Raspberry Pi и других ARM-устройствах
+устанавливается без компиляции: <code>pip install skyforge-lang</code> ставит готовый
+универсальный wheel. Проверить версию можно на
+<a href="https://www.piwheels.org/project/skyforge-lang/" target="_blank">piwheels.org</a>.</p>
+
 <h2>Windows (.exe, без Python)</h2>
 <p>Скачай готовый файл — Python не нужен:</p>
 <p>
