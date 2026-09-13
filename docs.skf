@@ -9,7 +9,7 @@ app.имя("SkyForge — документация")
     app.отладка(истина)
 }
 
-пусть ВЕРСИЯ = "1.1.0.5"
+пусть ВЕРСИЯ = "1.1.1"
 пусть РЕПО = "https://github.com/skytech-alt/SkyForge-Docs"
 пусть ПИПИ = "https://pypi.org/project/skyforge-lang/"
 
@@ -440,6 +440,74 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     вернуть сейчас() - РЕЕСТР["обновлено"]
 }
 
+// ================================================================
+// BANNED — забаненные пакеты и счётчик смеха
+// ================================================================
+пусть BANNED = {
+    "banned": [],
+    "политика": "",
+    "обновлено": 0
+}
+
+пусть СМЕХ = {}
+
+функция обновить_banned() {
+    попробовать {
+        пусть путь = "docs-app/banned.json"
+        если не существует(путь) { путь = "banned.json" }
+        если не существует(путь) {
+            лог("[banned] файл banned.json не найден")
+            вернуть
+        }
+        пусть data = json_читать(путь)
+        BANNED["banned"] = data.получить("banned", [])
+        BANNED["политика"] = data.получить("policy", "")
+        BANNED["обновлено"] = сейчас()
+        лог("[banned] загружено:", BANNED["banned"].длина(), "записей")
+    } поймать e {
+        лог("[banned] ошибка:", e)
+    }
+}
+
+функция проверить_бан(имя, репо) {
+    для запись в BANNED["banned"] {
+        пусть имя_b = запись.получить("name", "")
+        если имя_b.строчные() == имя.строчные() {
+            пусть репо_b = запись.получить("repo", "")
+            если репо_b == "" или репо_b.строчные() == репо.строчные() {
+                вернуть запись
+            }
+        }
+    }
+    вернуть ничего
+}
+
+функция получить_смех(имя) {
+    вернуть СМЕХ.получить(имя.строчные(), 0)
+}
+
+функция добавить_смех(имя) {
+    пусть ключ = имя.строчные()
+    СМЕХ[ключ] = СМЕХ.получить(ключ, 0) + 1
+    вернуть СМЕХ[ключ]
+}
+
+функция собрать_топ_смеха() {
+    пусть пары = СМЕХ.элементы()
+    вернуть пары.сортировать_по(функ(x) { вернуть -x[1] })
+}
+
+// Загружаем banned при старте
+обновить_banned()
+
+// Обновляем banned раз в час (если авторы правят вручную и перезаливают)
+поток(функция() {
+    пока истина {
+        спать(3600)
+        обновить_banned()
+    }
+})
+
 // Загружаем при старте
 обновить_реестр()
 
@@ -648,6 +716,18 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
 </ul>
 
 <h2>Что нового</h2>
+<div class="card" style="border-color:#ff5c7c;background:linear-gradient(135deg,rgba(255,92,124,0.08),transparent)">
+  <h3>v1.1.1 <span class="badge" style="background:#ff5c7c">Безопасность пакетов</span></h3>
+  <ul style="margin-bottom:0">
+    <li><strong>🔍 <code>install --dry-run</code></strong> — показать что будет установлено, без установки</li>
+    <li><strong>📖 <code>install --show-code</code></strong> — скачать и показать код пакета перед установкой</li>
+    <li><strong>✅ <code>SkyForge verify &lt;имя&gt;</code></strong> — проверить целостность пакета (хеш файлов)</li>
+    <li><strong>⚠️ <code>SkyForge list</code></strong> — автоматически помечает пакеты, изменённые после установки</li>
+    <li><strong>🚫 Banned-система</strong> — вредоносные пакеты блокируются через <code>banned.json</code></li>
+    <li><strong>😈 Кнопка «Посмеяться»</strong> на странице забаненного пакета</li>
+  </ul>
+</div>
+
 <div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.1),transparent)">
   <h3>v1.1.0.5 <span class="badge">Пакеты</span></h3>
   <ul style="margin-bottom:0">
@@ -920,7 +1000,7 @@ app.маршрут("/установка", "GET", функция(з) {
 
 <h2>Проверка</h2>
 <pre><code>SkyForge version
-<span class="cmt"># SkyForge 1.1.0</span>
+<span class="cmt"># SkyForge 1.1.1</span>
 <span class="cmt"># Python: 3.12.0</span>
 <span class="cmt"># Платформа: win32</span></code></pre>
 
@@ -2464,6 +2544,24 @@ SkyForge test tests.skf          <span class="cmt"># тесты</span>
 SkyForge web app.skf --port 8000 <span class="cmt"># web</span>
 SkyForge gui                     <span class="cmt"># GUI-лаунчер</span>
 SkyForge version                 <span class="cmt"># версия</span></code></pre>
+
+<h2>Команды пакетов (1.1.0.5+)</h2>
+<pre><code>SkyForge install weather              <span class="cmt"># установить из реестра</span>
+SkyForge install ./my-package         <span class="cmt"># из локальной папки</span>
+SkyForge install weather --dry-run    <span class="cmt"># показать, не устанавливая</span>
+SkyForge install weather --show-code  <span class="cmt"># скачать и показать код</span>
+SkyForge install weather --trust      <span class="cmt"># сразу подтвердить</span>
+SkyForge install weather --force      <span class="cmt"># переустановить</span>
+
+SkyForge search                       <span class="cmt"># все пакеты</span>
+SkyForge search weather               <span class="cmt"># поиск по имени</span>
+SkyForge trusted                      <span class="cmt"># whitelist</span>
+SkyForge trusted --refresh            <span class="cmt"># обновить с сервера</span>
+SkyForge list                         <span class="cmt"># установленные</span>
+SkyForge info hello                   <span class="cmt"># подробности</span>
+SkyForge verify hello                 <span class="cmt"># проверка хешей</span>
+SkyForge approve hello                <span class="cmt"># подтвердить</span>
+SkyForge uninstall hello              <span class="cmt"># удалить</span></code></pre>
 """
     вернуть страница("Шпаргалка", "/шпаргалка", контент)
 })
@@ -2493,6 +2591,17 @@ app.маршрут("/faq", "GET", функция(з) {
 
 <h2>Есть пакетный менеджер?</h2>
 <p>Да, с версии <strong>1.1.0.5</strong>. Устанавливай сторонние пакеты одной командой: <code>SkyForge install weather</code>. Поиск — <code>SkyForge search</code>. Проверенные автором пакеты помечены как <span style="color:#3ddc84">Проверенный</span>, остальные — <span style="color:#8b93a7">Сообщество</span>. Полный каталог — на <a href="/пакеты">/пакеты</a>. Инструкция по созданию своего — <a href="/как-создать-пакет">/как-создать-пакет</a>.</p>
+
+<h2>Как проверить пакет перед установкой?</h2>
+<p>Три способа, от простого к глубокому:</p>
+<pre><code>SkyForge install weather --dry-run    <span class="cmt">// показать метаданные</span>
+SkyForge install weather --show-code  <span class="cmt">// скачать и показать код</span>
+SkyForge verify weather               <span class="cmt">// проверить хеши после установки</span></code></pre>
+<p>А ещё <code>SkyForge list</code> автоматически помечает <strong>ИЗМЕНЁН!</strong> пакеты, чьи файлы кто-то подменил после установки.</p>
+
+<h2>Что делать, если пакет оказался вредоносным?</h2>
+<p>Пакеты, признанные вредоносными, попадают в <code>banned.json</code> — публичный список на сервере SkyForge. Установка таких пакетов блокируется для всех пользователей. Если ты нашёл вредоносный пакет — открой issue на <a href="https://github.com/skytech-alt/SkyForge-Docs/issues" target="_blank">GitHub</a>, мы добавим его в список.</p>
+<p>На странице забаненного пакета есть кнопка <strong>😈 Посмеяться</strong> — можешь выразить своё отношение к автору.</p>
 
 <h2>Как импортировать пакет в код?</h2>
 <pre><code><span class="kw">пусть</span> weather = <span class="kw">подтянуть</span> "weather"
@@ -2831,6 +2940,7 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
   <li>✅ <strong>Транспилятор <code>.skf → Python</code></strong> — флаг <code>--fast</code>, ускорение до 130× (v1.0.7)</li>
   <li>✅ <strong>Аудит безопасности</strong> — закрыты C-1..C-5, H-1..H-4, M-1..M-4 (v1.0.8)</li>
   <li>✅ <strong>Система пакетов</strong> — install / search / trusted, реестр на GitHub, whitelist (v1.1.0.5)</li>
+  <li>✅ <strong>Безопасность пакетов</strong> — dry-run, show-code, verify, banned-система (v1.1.1)</li>
   <li>✅ AutoREST: Bearer-токен, CSRF, экранирование в админке</li>
   <li>✅ Path traversal в статике и шаблонах закрыт</li>
 </ul>
@@ -2870,8 +2980,8 @@ app.маршрут("/дорожная-карта", "GET", функция(з) {
     <p><code>SkyForge сайт build</code> — markdown + шаблоны → готовый сайт для GitHub Pages.</p>
   </div>
   <div class="card">
-    <h3>🔒 Подписи пакетов</h3>
-    <p>GPG-подписи авторов и проверка хешей при установке. Продолжение системы пакетов.</p>
+    <h3>🔒 Подписи авторов</h3>
+    <p>GPG-подписи авторов пакетов и автоматическая проверка подлинности при установке.</p>
   </div>
   <div class="card">
     <h3>🐛 Отладчик</h3>
@@ -3057,9 +3167,13 @@ app.маршрут("/пакеты", "GET", функция(з) {
     } иначе {
         для п в пакеты {
             пусть запись = проверить_доверие(п["имя"], п["репо"])
+            пусть бан = проверить_бан(п["имя"], п["репо"])
             пусть цвет = "#8b93a7"
             пусть бейдж = "Сообщество"
-            если запись != ничего {
+            если бан != ничего {
+                цвет = "#ff5c7c"
+                бейдж = "ЗАБАНЕН"
+            } иначе если запись != ничего {
                 цвет = "#3ddc84"
                 бейдж = "Проверенный"
             }
@@ -3136,11 +3250,16 @@ app.маршрут("/пакеты/<имя>", "GET", функция(з) {
     }
 
     пусть запись = проверить_доверие(найденный["имя"], найденный["репо"])
+    пусть бан = проверить_бан(найденный["имя"], найденный["репо"])
     пусть цвет = "#8b93a7"
     пусть статус = "Сообщество"
     пусть описание_статуса = "Пакет от стороннего разработчика. Не проверен автором SkyForge. Устанавливайте на свой риск."
 
-    если запись != ничего {
+    если бан != ничего {
+        цвет = "#ff5c7c"
+        статус = "ЗАБАНЕН"
+        описание_статуса = "Пакет признан вредоносным. Установка заблокирована для всех пользователей SkyForge."
+    } иначе если запись != ничего {
         цвет = "#3ddc84"
         статус = "Проверенный"
         описание_статуса = "Пакет вручную проверен автором SkyForge и внесён в whitelist."
@@ -3171,16 +3290,105 @@ app.маршрут("/пакеты/<имя>", "GET", функция(з) {
         описание = "Без описания."
     }
 
+    // Если пакет забанен — особый блок
+    пусть блок_установки = ""
+    если бан != ничего {
+        пусть причина = бан.получить("reason", "не указана")
+        пусть заметка_бана = бан.получить("note", "")
+        пусть забанен_в = бан.получить("banned_at", "")
+        пусть текущий_смех = получить_смех(найденный["имя"])
+
+        пусть блок_заметки_бана = ""
+        если заметка_бана != "" {
+            блок_заметки_бана = "<p style='color:#8b93a7;margin-top:12px;font-size:14px'>" + заметка_бана + "</p>"
+        }
+
+        блок_установки = """
+<div class="card" style="border-color:#ff5c7c;background:linear-gradient(135deg,rgba(255,92,124,0.1),transparent)">
+<p style="margin:0;font-size:20px;font-weight:700;color:#ff5c7c">🚫 ПАКЕТ ЗАБАНЕН</p>
+<p style="margin:12px 0 0"><strong style="color:#fff">Причина:</strong> """ + причина + """</p>
+<p style="margin:8px 0 0;color:#8b93a7;font-size:13px">Забанен: """ + забанен_в + """</p>
+""" + блок_заметки_бана + """
+</div>
+
+<div class="card" style="border-color:#ff5c7c;background:linear-gradient(135deg,rgba(255,92,124,0.05),transparent);text-align:center;padding:32px 22px">
+<p style="margin:0 0 8px;color:#8b93a7;font-size:14px">Пакет никогда не был установлен пользователями SkyForge. Пока что.</p>
+<p style="margin:0 0 20px;color:#8b93a7;font-size:14px">Помоги автору пакета получить заслуженное:</p>
+<button id="laugh-btn" data-package="PACKAGE_PLACEHOLDER" style="background:#ff5c7c;color:#fff;border:none;border-radius:10px;padding:16px 32px;font-size:18px;font-weight:700;cursor:pointer;transition:transform .1s;font-family:inherit">😈 ПОСМЕЯТЬСЯ</button>
+<p style="margin:20px 0 0;color:#8b93a7;font-size:13px">Уже посмеялись: <span id="laugh-count" style="color:#ff5c7c;font-weight:700;font-size:20px">""" + строка(текущий_смех) + """</span> раз</p>
+</div>
+
+<audio id="laugh-audio" src="/laugh.mp3" preload="auto"></audio>
+<script>
+(function() {
+    window.laughAt = function(name) {
+        // Звук из mp3
+        var audio = document.getElementById('laugh-audio');
+        if (audio) {
+            try {
+                audio.currentTime = 0;
+                var p = audio.play();
+                if (p && p.catch) {
+                    p.catch(function(e) { console.log('audio blocked', e); });
+                }
+            } catch (e) {
+                console.log('audio error', e);
+            }
+        }
+        // Визуальный отклик
+        var btn = document.getElementById('laugh-btn');
+        if (btn) {
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(function(){ btn.style.transform = 'scale(1)'; }, 100);
+        }
+        // POST на сервер
+        fetch('/api/посмеяться/' + encodeURIComponent(name), { method: 'POST' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var el = document.getElementById('laugh-count');
+                if (el && data.count !== undefined) {
+                    el.textContent = data.count;
+                }
+            })
+            .catch(function(e) {
+                console.error('laugh error', e);
+            });
+    };
+
+    // Инициализация кнопки
+    function bindButton() {
+        var btn = document.getElementById('laugh-btn');
+        if (btn && !btn.__bound) {
+            btn.__bound = true;
+            btn.addEventListener('click', function() {
+                laughAt(this.dataset.package);
+            });
+        }
+    }
+    document.addEventListener('DOMContentLoaded', bindButton);
+    if (document.readyState !== 'loading') {
+        bindButton();
+    }
+})();
+</script>"""
+    } иначе {
+        блок_установки = """
+<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+<p style="margin:0 0 10px"><strong>Установка</strong></p>
+<pre style="margin:0"><code>SkyForge install """ + найденный["имя"] + """</code></pre>
+</div>"""
+    }
+
+    // Подставляем имя пакета в data-атрибут кнопки
+    блок_установки = блок_установки.заменить("PACKAGE_PLACEHOLDER", найденный["имя"])
+
     пусть контент = """
 <h1>📦 """ + найденный["имя"] + """ <span class="badge" style="background:""" + цвет + """">""" + статус + """</span></h1>
 <p class="subtitle">""" + описание + """</p>
 
 """ + блок_автора + """
 
-<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
-<p style="margin:0 0 10px"><strong>Установка</strong></p>
-<pre style="margin:0"><code>SkyForge install """ + найденный["имя"] + """</code></pre>
-</div>
+""" + блок_установки + """
 
 """ + блок_заметки + """
 
@@ -3319,6 +3527,25 @@ SkyForge install my-package --trust</code></pre>
 })
 
 // ================================================================
+// API ДЛЯ КНОПКИ «ПОСМЕЯТЬСЯ»
+// ================================================================
+app.маршрут("/api/посмеяться/<имя>", "POST", функция(з) {
+    пусть имя = з["параметры_маршрута"]["имя"]
+    пусть новый = добавить_смех(имя)
+    лог("[смех]", имя, "->", новый)
+    вернуть {"имя": имя, "count": новый}
+})
+
+app.маршрут("/api/посмеяться/<имя>", "GET", функция(з) {
+    пусть имя = з["параметры_маршрута"]["имя"]
+    вернуть {"имя": имя, "count": получить_смех(имя)}
+})
+
+app.маршрут("/api/посмеяться", "GET", функция(з) {
+    вернуть {"топ": собрать_топ_смеха()}
+})
+
+// ================================================================
 // СТАТИКА + 404
 // ================================================================
 app.маршрут("/<файл>", "GET", функция(з) {
@@ -3331,7 +3558,9 @@ app.маршрут("/<файл>", "GET", функция(з) {
     // D-2: allowlist расширений. Иначе любой файл отдавался как text/plain,
     // включая сам docs.skf, .env, render.yaml.
     пусть РАЗРЕШ = [".html", ".htm", ".css", ".js", ".txt", ".xml",
-                    ".json", ".svg", ".ico"]
+                    ".json", ".svg", ".ico",
+                    ".mp3", ".ogg", ".wav",
+                    ".png", ".jpg", ".jpeg", ".gif", ".webp"]
     пусть низ = имя.строчные()
     пусть ок = ложь
     для р в РАЗРЕШ {
@@ -3359,7 +3588,7 @@ app.маршрут("/<файл>", "GET", функция(з) {
         вернуть app.ошибка(страница("404", "/", контент404), 404)
     }
 
-    пусть расш = расширение(имя)
+    пусть расш = расширение(имя).строчные()
 
     если расш == ".html" или расш == ".htm" {
         вернуть app.html_ответ(читать_файл(путь, "utf-8"))
@@ -3385,8 +3614,26 @@ app.маршрут("/<файл>", "GET", функция(з) {
     если расш == ".ico" {
         вернуть app.сырой_ответ(200, "image/x-icon", читать_файл(путь, "utf-8"))
     }
+    если расш == ".mp3" {
+        вернуть app.бинарный_ответ(200, "audio/mpeg", путь)
+    }
+    если расш == ".ogg" {
+        вернуть app.бинарный_ответ(200, "audio/ogg", путь)
+    }
+    если расш == ".wav" {
+        вернуть app.бинарный_ответ(200, "audio/wav", путь)
+    }
     если расш == ".png" {
-        вернуть app.сырой_ответ(200, "image/png", читать_файл(путь, "utf-8"))
+        вернуть app.бинарный_ответ(200, "image/png", путь)
+    }
+    если расш == ".jpg" или расш == ".jpeg" {
+        вернуть app.бинарный_ответ(200, "image/jpeg", путь)
+    }
+    если расш == ".gif" {
+        вернуть app.бинарный_ответ(200, "image/gif", путь)
+    }
+    если расш == ".webp" {
+        вернуть app.бинарный_ответ(200, "image/webp", путь)
     }
 
     вернуть app.текст_ответ(читать_файл(путь, "utf-8"))
