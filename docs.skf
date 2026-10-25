@@ -350,6 +350,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     ]],
     ["Пакеты", [
         ["/пакеты", "📦 Каталог пакетов"],
+        ["/лидерборд", "🏆 Лидерборд"],
         ["/как-создать-пакет", "🛠 Создать пакет"],
     ]],
     ["Практика", [
@@ -497,6 +498,95 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     вернуть пары.сортировать_по(функ(x) { вернуть -x[1] })
 }
 
+// ================================================================
+// ЛИДЕРБОРД — вклад авторов в экосистему
+// ================================================================
+пусть ЛИДЕРБОРД = {
+    "данные": [],
+    "обновлено": 0,
+    "обновляется": ложь
+}
+
+пусть ОЧКИ_ЗА_ПАКЕТ = 100
+пусть ОЧКИ_ЗА_ЗВЕЗДУ = 1
+пусть ОЧКИ_ЗА_ПРОВЕРКУ = 200
+
+функция построить_лидерборд() {
+    если ЛИДЕРБОРД["обновляется"] { вернуть }
+    ЛИДЕРБОРД["обновляется"] = истина
+
+    попробовать {
+        пусть по_автору = {}
+
+        для п в РЕЕСТР["пакеты"] {
+            пусть репо = п["репо"]
+            пусть части = репо.разделить("/")
+            если части.длина() < 2 { продолжить }
+            пусть автор = части[0]
+
+            если по_автору.получить(автор, ничего) == ничего {
+                по_автору[автор] = {
+                    "автор": автор,
+                    "пакеты": [],
+                    "звёзд_всего": 0,
+                    "проверенных": 0,
+                    "забаненных": 0
+                }
+            }
+
+            пусть бан = проверить_бан(п["имя"], п["репо"])
+            если бан != ничего {
+                по_автору[автор]["забаненных"] += 1
+            } иначе {
+                по_автору[автор]["пакеты"].добавить_в_конец({
+                    "имя": п["имя"],
+                    "звёзд": п["звёзд"],
+                    "url": п["url"]
+                })
+                по_автору[автор]["звёзд_всего"] += п["звёзд"]
+
+                если проверить_доверие(п["имя"], п["репо"]) != ничего {
+                    по_автору[автор]["проверенных"] += 1
+                }
+            }
+        }
+
+        пусть массив = []
+        для пара в по_автору.элементы() {
+            пусть a = пара[1]
+            если a["пакеты"].длина() == 0 { продолжить }
+            a["очки"] = a["пакеты"].длина() * ОЧКИ_ЗА_ПАКЕТ
+                + a["звёзд_всего"] * ОЧКИ_ЗА_ЗВЕЗДУ
+                + a["проверенных"] * ОЧКИ_ЗА_ПРОВЕРКУ
+            массив.добавить_в_конец(a)
+        }
+
+        пусть отсортировано = массив.сортировать_по(функ(x) { вернуть -x["очки"] })
+        для i от 0 до отсортировано.длина() {
+            отсортировано[i]["ранг"] = i + 1
+        }
+
+        ЛИДЕРБОРД["данные"] = отсортировано
+        ЛИДЕРБОРД["обновлено"] = сейчас()
+        лог("[лидерборд] обновлён:", отсортировано.длина(), "авторов")
+    } поймать e {
+        лог("[лидерборд] ошибка:", e)
+    }
+
+    ЛИДЕРБОРД["обновляется"] = ложь
+}
+
+функция возраст_лидерборда() {
+    вернуть сейчас() - ЛИДЕРБОРД["обновлено"]
+}
+
+функция получить_лидерборд() {
+    если ЛИДЕРБОРД["данные"].длина() == 0 или возраст_лидерборда() > 300 {
+        построить_лидерборд()
+    }
+    вернуть ЛИДЕРБОРД["данные"]
+}
+
 // Загружаем banned при старте
 обновить_banned()
 
@@ -510,12 +600,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 
 // Загружаем при старте
 обновить_реестр()
+построить_лидерборд()
 
 // Фоновое обновление раз в час
 поток(функция() {
     пока истина {
         спать(3600)
         обновить_реестр()
+        построить_лидерборд()
     }
 })
 
@@ -600,6 +692,37 @@ hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
 // ГЛАВНАЯ
 // ================================================================
 app.маршрут("/", "GET", функция(з) {
+    // Виджет лидерборда на главной
+    пусть топ_лидеров = получить_лидерборд()
+    пусть блок_лидеров = ""
+    если топ_лидеров.длина() > 0 {
+        пусть топ3 = топ_лидеров
+        если топ_лидеров.длина() > 3 {
+            топ3 = топ_лидеров.срез(0, 3)
+        }
+        пусть медали = ["🥇", "🥈", "🥉"]
+        пусть карточки = ""
+        для a в топ3 {
+            пусть медаль = медали[a["ранг"] - 1]
+            карточки = карточки + """
+<div class="card" style="text-align:center">
+  <div style="font-size:36px">""" + медаль + """</div>
+  <img src="https://github.com/""" + a["автор"] + """.png?size=60" style="width:60px;height:60px;border-radius:50%;margin:10px 0">
+  <h3 style="margin:4px 0"><a href="https://github.com/""" + a["автор"] + """" target="_blank">""" + a["автор"] + """</a></h3>
+  <p style="color:#8b93a7;font-size:13px;margin:0">""" + строка(a["очки"]) + """ очков · 📦 """ + строка(a["пакеты"].длина()) + """</p>
+</div>"""
+        }
+        блок_лидеров = """
+<h2>🏆 Топ авторов</h2>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+""" + карточки + """
+</div>
+<div style="text-align:center;margin:18px 0 0">
+  <a href="/лидерборд" style="color:#a592ff;font-weight:600">Полный лидерборд →</a>
+</div>
+"""
+    }
+
     пусть контент = """
 <div class="hero">
   <h1>SkyForge</h1>
@@ -715,6 +838,8 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
   <li><strong>Свой лаунчер</strong> — <code>SkyForge gui</code> с подсветкой синтаксиса.</li>
 </ul>
 
+""" + блок_лидеров + """
+
 <h2>Что нового</h2>
 <div class="card" style="border-color:#ff5c7c;background:linear-gradient(135deg,rgba(255,92,124,0.08),transparent)">
   <h3>v1.1.1 <span class="badge" style="background:#ff5c7c">Безопасность пакетов</span></h3>
@@ -798,7 +923,6 @@ app.<span class="fn">запустить</span>(<span class="num">8000</span>)</c
 """
     вернуть страница("Введение", "/", контент)
 })
-
 // ================================================================
 // AUTOREST
 // ================================================================
@@ -3097,6 +3221,7 @@ app.маршрут("/sitemap.xml", "GET", функция(з) {
         ["/gui", "0.7", "monthly", "Десктопные приложения на SkyForge"],
         ["/vscode", "0.9", "weekly", "LSP-сервер и расширение VS Code для SkyForge"],
         ["/пакеты", "1.0", "daily", "Каталог пакетов SkyForge"],
+        ["/лидерборд", "0.9", "daily", "Лидерборд авторов пакетов SkyForge"],
         ["/как-создать-пакет", "0.9", "weekly", "Инструкция: как создать пакет SkyForge"],
         ["/транспилятор", "1.0", "weekly", "Транспилятор SkyForge — до 130× быстрее интерпретатора"],
         ["/тесты", "0.8", "monthly", "Тестирование в SkyForge"],
@@ -3217,6 +3342,10 @@ app.маршрут("/пакеты", "GET", функция(з) {
 
 <div style="text-align:center;margin:32px 0">
   <a href="/как-создать-пакет" style="display:inline-block;background:#8b6cff;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">📘 Как создать пакет →</a>
+</div>
+
+<div style="text-align:center;margin:8px 0 0">
+  <a href="/лидерборд" style="color:#a592ff;font-weight:600">🏆 Посмотреть лидерборд авторов →</a>
 </div>
 """
     вернуть страница("Пакеты", "/пакеты", контент)
@@ -3406,11 +3535,11 @@ app.маршрут("/пакеты/<имя>", "GET", функция(з) {
 </table>
 
 <h2>Как использовать</h2>
-<pre><code>пусть """ + найденный["имя"] + """ = подтянуть """" + найденный["имя"] + """"
+<pre><code>пусть """ + найденный["имя"] + """ = подтянуть """" + найденный["имя"] + """" 
 // вызови функции пакета
 </code></pre>
 
-<p style="margin-top:32px"><a href="/пакеты">← Все пакеты</a></p>
+<p style="margin-top:32px"><a href="/пакеты">← Все пакеты</a> · <a href="/лидерборд">🏆 Лидерборд</a></p>
 """
     вернуть страница(найденный["имя"], "/пакеты", контент)
 })
@@ -3504,7 +3633,7 @@ SkyForge install my-package --trust</code></pre>
   <li>Репозиторий точно публичный? (Приватные не индексируются)</li>
   <li>Топик <code>skyforge-package</code> точно сохранён? (Открой страницу репо, посмотри в разделе About)</li>
   <li>Прошло ли 2–3 минуты? (GitHub индексирует не мгновенно)</li>
-  <li>Сбрось кэш клиента: <code>Remove-Item -Recurse $env:USERPROFILE\.skyforge\cache</code></li>
+  <li>Сбрось кэш клиента: <code>Remove-Item -Recurse $env:USERPROFILE\\.skyforge\\cache</code></li>
 </ul>
 
 <h2>Статус «Проверенный»</h2>
@@ -3515,6 +3644,7 @@ SkyForge install my-package --trust</code></pre>
 <h2>Что дальше</h2>
 <ul>
   <li><a href="/пакеты">Каталог пакетов</a> — посмотри, что уже есть</li>
+  <li><a href="/лидерборд">Лидерборд</a> — попади в топ авторов</li>
   <li><a href="/рецепты">Рецепты</a> — идеи для полезных пакетов</li>
   <li><a href="/модули">Стандартная библиотека</a> — что уже встроено в язык (не нужно дублировать)</li>
 </ul>
@@ -3524,6 +3654,160 @@ SkyForge install my-package --trust</code></pre>
 </div>
 """
     вернуть страница("Как создать пакет", "/как-создать-пакет", контент)
+})
+
+// ================================================================
+// ЛИДЕРБОРД — страница
+// ================================================================
+app.маршрут("/лидерборд", "GET", функция(з) {
+    пусть данные = получить_лидерборд()
+
+    пусть блок_топ3 = ""
+    пусть блок_таблицы = ""
+
+    если данные.длина() == 0 {
+        блок_топ3 = """
+<div class="card" style="text-align:center;padding:40px">
+<p style="font-size:22px;margin:0 0 12px">🏆 Пока никого нет</p>
+<p style="color:#8b93a7;margin:0">Стань первым — опубликуй пакет на GitHub с топиком <code>skyforge-package</code>.<br>
+Подробности — <a href="/как-создать-пакет">как создать пакет</a>.</p>
+</div>
+"""
+    } иначе {
+        пусть медали = ["🥇", "🥈", "🥉"]
+        пусть топ3 = данные
+        если данные.длина() > 3 {
+            топ3 = данные.срез(0, 3)
+        }
+
+        пусть карточки_топ = ""
+        для a в топ3 {
+            пусть медаль = медали[a["ранг"] - 1]
+            пусть цвет = "#8b93a7"
+            если a["ранг"] == 1 { цвет = "#ffd700" }
+            иначе если a["ранг"] == 2 { цвет = "#c0c0c0" }
+            иначе если a["ранг"] == 3 { цвет = "#cd7f32" }
+
+            пусть проверено_html = ""
+            если a["проверенных"] > 0 {
+                проверено_html = " · <span style='color:#3ddc84'>✅ " + строка(a["проверенных"]) + "</span>"
+            }
+
+            карточки_топ = карточки_топ + """
+<div class="card" style="border-color:""" + цвет + """;text-align:center;padding:24px 16px">
+<div style="font-size:48px;line-height:1">""" + медаль + """</div>
+<img src="https://github.com/""" + a["автор"] + """.png?size=80" alt="""" + a["автор"] + """" style="width:80px;height:80px;border-radius:50%;margin:14px 0;border:3px solid """ + цвет + """">
+<h3 style="margin:8px 0 4px;font-size:18px"><a href="https://github.com/""" + a["автор"] + """" target="_blank">""" + a["автор"] + """</a></h3>
+<p style="color:""" + цвет + """;font-size:26px;font-weight:800;margin:10px 0 4px">""" + строка(a["очки"]) + """</p>
+<p style="color:#8b93a7;font-size:12px;margin:0;text-transform:uppercase;letter-spacing:1px">очков</p>
+<p style="color:#8b93a7;font-size:13px;margin:12px 0 0">📦 """ + строка(a["пакеты"].длина()) + """ пакетов""" + проверено_html + """</p>
+</div>"""
+        }
+
+        блок_топ3 = '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">' + карточки_топ + '</div>'
+
+        пусть строки = ""
+        для a в данные {
+            пусть медаль = ""
+            если a["ранг"] == 1 { медаль = "🥇" }
+            иначе если a["ранг"] == 2 { медаль = "🥈" }
+            иначе если a["ранг"] == 3 { медаль = "🥉" }
+            иначе { медаль = строка(a["ранг"]) }
+
+            пусть проверено_html = ""
+            если a["проверенных"] > 0 {
+                проверено_html = " · <span style='color:#3ddc84'>✅ " + строка(a["проверенных"]) + "</span>"
+            }
+
+            пусть бан_html = ""
+            если a["забаненных"] > 0 {
+                бан_html = " · <span style='color:#ff5c7c'>🚫 " + строка(a["забаненных"]) + "</span>"
+            }
+
+            пусть список_пакетов = ""
+            для п в a["пакеты"] {
+                список_пакетов = список_пакетов + "<a href='/пакеты/" + п["имя"] + "' style='display:inline-block;background:#161923;border:1px solid #242938;border-radius:6px;padding:2px 8px;margin:2px;font-size:12px;color:#c8cce0'>📦 " + п["имя"] + " <span style='color:#8b93a7'>" + строка(п["звёзд"]) + "⭐</span></a>"
+            }
+
+            строки = строки + """
+<tr style="border-bottom:1px solid #242938">
+<td style="padding:14px 8px;font-size:22px;text-align:center">""" + медаль + """</td>
+<td style="padding:14px 8px">
+  <img src="https://github.com/""" + a["автор"] + """.png?size=40" style="width:36px;height:36px;border-radius:50%;vertical-align:middle;margin-right:10px">
+  <a href="https://github.com/""" + a["автор"] + """" target="_blank" style="font-weight:600;font-size:15px">""" + a["автор"] + """</a>
+</td>
+<td style="padding:14px 8px;text-align:center">""" + строка(a["пакеты"].длина()) + проверено_html + бан_html + """</td>
+<td style="padding:14px 8px;text-align:center">""" + строка(a["звёзд_всего"]) + """ ⭐</td>
+<td style="padding:14px 8px;text-align:center;font-weight:700;color:#a592ff;font-size:16px">""" + строка(a["очки"]) + """</td>
+<td style="padding:14px 8px;font-size:12px">""" + список_пакетов + """</td>
+</tr>"""
+        }
+
+        блок_таблицы = """
+<div class="card" style="padding:0;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse">
+<thead>
+<tr style="border-bottom:2px solid #242938">
+<th style="padding:12px 8px;text-align:center;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">#</th>
+<th style="padding:12px 8px;text-align:left;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">Автор</th>
+<th style="padding:12px 8px;text-align:center;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">Пакетов</th>
+<th style="padding:12px 8px;text-align:center;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">Звёзд</th>
+<th style="padding:12px 8px;text-align:center;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">Очки</th>
+<th style="padding:12px 8px;text-align:left;font-size:11px;text-transform:uppercase;color:#8b93a7;letter-spacing:1px">Пакеты</th>
+</tr>
+</thead>
+<tbody>""" + строки + """</tbody>
+</table>
+</div>"""
+    }
+
+    пусть контент = """
+<h1>🏆 Лидерборд</h1>
+<p class="subtitle">Авторы, которые строят экосистему SkyForge. Никнейм = GitHub-username.</p>
+
+""" + блок_топ3 + """
+
+<h2>Все авторы</h2>
+""" + блок_таблицы + """
+
+<h2>Как считаются очки</h2>
+<div class="grid">
+  <div class="card" style="text-align:center">
+    <p style="font-size:32px;margin:0">+100</p>
+    <p style="color:#8b93a7;margin:6px 0 0;font-size:13px">за каждый пакет</p>
+  </div>
+  <div class="card" style="text-align:center">
+    <p style="font-size:32px;margin:0">+1</p>
+    <p style="color:#8b93a7;margin:6px 0 0;font-size:13px">за каждую звезду</p>
+  </div>
+  <div class="card" style="text-align:center;border-color:#3ddc84">
+    <p style="font-size:32px;margin:0;color:#3ddc84">+200</p>
+    <p style="color:#8b93a7;margin:6px 0 0;font-size:13px">за проверенный пакет</p>
+  </div>
+  <div class="card" style="text-align:center;border-color:#ff5c7c">
+    <p style="font-size:32px;margin:0;color:#ff5c7c">0</p>
+    <p style="color:#8b93a7;margin:6px 0 0;font-size:13px">за забаненный пакет</p>
+  </div>
+</div>
+
+<div class="card" style="border-color:#8b6cff;background:linear-gradient(135deg,rgba(139,108,255,0.08),transparent)">
+<p style="margin:0"><strong>Топ не вечен.</strong> Опубликуй полезный пакет — и окажешься в списке. Данные обновляются каждый час автоматически, а также при заходе на страницу, если кэшу больше 5 минут.</p>
+</div>
+
+<h2>Как попасть в лидерборд</h2>
+<ol>
+  <li>Опубликуй пакет — <a href="/как-создать-пакет">инструкция здесь</a>.</li>
+  <li>Добавь к репозиторию на GitHub топик <code>skyforge-package</code>.</li>
+  <li>Попроси whitelist — если пакет качественный, он получит отметку «Проверенный».</li>
+</ol>
+
+<p style="margin-top:32px;color:#8b93a7;font-size:13px">
+Последнее обновление: """ + дата_сейчас() + """
+</p>
+
+<p><a href="/пакеты">← Все пакеты</a> · <a href="/как-создать-пакет">Создать пакет →</a></p>
+"""
+    вернуть страница("Лидерборд", "/лидерборд", контент)
 })
 
 // ================================================================
